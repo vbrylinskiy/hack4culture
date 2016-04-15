@@ -100,6 +100,13 @@
         if (toRemoveId > -1) markers.splice(toRemoveId,1);
       }
 
+      function removeAllMarkers() {
+        markers.forEach(function(marker){
+          marker.setMap(null);
+        })
+        markers = [];
+      }
+
       function parseCords(marker) {
         return marker.position.lat()+','+marker.position.lng();
       }
@@ -131,6 +138,12 @@
           if (status === google.maps.DirectionsStatus.OK) {
   
             directionsDisplay.setDirections(response);
+
+            //hide the button
+            $('#endRoute').fadeOut();
+
+            //remove the markers, because we'll get new ones
+            removeAllMarkers();
    
           } else {
             window.alert('Directions request failed due to ' + status);
