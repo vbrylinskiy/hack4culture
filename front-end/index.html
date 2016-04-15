@@ -27,14 +27,17 @@
         width: 200px;
         text-align: center;
       }
-
+      .alert{
+        width: 300px;
+        left: calc(50% - 150px);
+      }
       #endRoute {
         display: none;
       }
     </style>
   </head>
   <body>
-  <div class="alert alert-danger msg">Click map to start adding route points.</div>
+  <div class="alert alert-danger msg">Click map to start adding route points. <br/> (If you made a mistake, click marker to remove it).</div>
   <button class="btn btn-primary btn-lg msg" id="endRoute">Finished planning?</button> 
     <div id="map">     
     </div>
