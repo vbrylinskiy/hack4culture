@@ -44,11 +44,13 @@
     <script>
     var map;
     var markers = [];
+    var finalMarkers = [];
 
     var directionsService;
     var directionsDisplay;
     var stepDisplay;
     var markerListener;
+
 
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -64,10 +66,7 @@
           placeMarkerAndPanTo(e.latLng, map);
         });
 
-
-      }
-
-    
+      }    
 
       $('#endRoute').on("click",function(){
         
@@ -109,7 +108,7 @@
       }
 
       function parseCords(marker) {
-        return marker.position.lat()+','+marker.position.lng();
+        return marker.lat()+','+marker.lng();
       }
 
       function calculateAndDisplayRoute(directionsDisplay, directionsService,
@@ -120,7 +119,7 @@
         if (markers.length > 2) {
           for (i = 1; i < markers.length -1; i ++) {
             waypoints.push({
-              location: parseCords(markers[i]),
+              location: parseCords(markers[i].position),
               stopover: true
             })
           }
@@ -129,8 +128,8 @@
         // Retrieve the start and end locations and create a DirectionsRequest using
         // WALKING directions.
         directionsService.route({
-          origin: parseCords(markers[0]),
-          destination: parseCords(markers[markers.length - 1]),
+          origin: parseCords(markers[0].position),
+          destination: parseCords(markers[markers.length - 1].position),
           waypoints: waypoints,
           travelMode: google.maps.TravelMode.WALKING
         }, function(response, status) {
@@ -140,12 +139,17 @@
   
             directionsDisplay.setDirections(response);
 
-            //hide the button
+            
+            //hide the button 
             $('#endRoute').fadeOut();
 
             //remove the markers, because we'll get new ones from direction
             removeAllMarkers();
 
+            
+
+            getNewMarkers(response.geocoded_waypoints);           
+            
             //not allowing to add markers after route is planned
             google.maps.event.removeListener(markerListener);
    
@@ -154,7 +158,62 @@
           }
         });
       }
+
+
+
+      function getNewMarkers(waypoints) {
+            var dfds = [];
+            waypoints.forEach(function(waypoint){ 
+                dfds.push(placeId2Cords(waypoint.place_id));
+            })
+            $.when.apply($, dfds).done(function(){
+              var args = Array.prototype.slice.call(arguments);
+              args.forEach(function(location){
+                console.log(location.lat());
+                finalMarkers.push(parseCords(location))
+              })
+                
+            fetchEvents();
+            })
+      }
+
+      function placeId2Cords(placeId) {
+      var dfd = $.Deferred();        
+      var geocoder = new google.maps.Geocoder;
+        geocoder.geocode({'placeId': placeId}, function(results, status) {
+           if (status === google.maps.GeocoderStatus.OK) {
+             if (results[0]) {
+                dfd.resolve(results[0].geometry.location)                
+             } else {
+               dfd.reject('No results found');
+             }
+           } else {
+             dfd.reject('Geocoder failed due to: ' + status);
+           }
+
+         });
+         return dfd.promise();
+      }
+
+      function fetchEvents(){
+        getLocation(finalMarkers[0]);
+
+        
+        finalMarkers.forEach(function(location) {
+
+        })
+      }
+
+      function getLocation(location){
+        var url = "http://go.wroclaw.pl/api/v1.0/places/nearLocation/"+location+"?key=928012495102009594014322187345717861707";
+        $.get(url).done(function(r){
+          console.log(r);
+        })
+        
+      }
     </script>
+ 
+    //928012495102009594014322187345717861707
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8Xi1jWD6A14ySigUkN8QKnDjK1HWw1tY&callback=initMap">
     </script>
