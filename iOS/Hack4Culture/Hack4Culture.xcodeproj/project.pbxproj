@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		3894A7B77E7292657F95FA8D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F6CDFFF9680284346E03161 /* libPods.a */; };
 		C2F8C6781CC14F0F0019E911 /* RequestHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6771CC14F0F0019E911 /* RequestHelper.m */; };
-		C2F8C67B1CC156F20019E911 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C67A1CC156F20019E911 /* Event.m */; };
-		C2F8C67E1CC157220019E911 /* EventList.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C67D1CC157220019E911 /* EventList.m */; };
+		C2F8C67B1CC156F20019E911 /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C67A1CC156F20019E911 /* Place.m */; };
+		C2F8C67E1CC157220019E911 /* PlaceList.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C67D1CC157220019E911 /* PlaceList.m */; };
+		C2F8C6821CC176480019E911 /* EventList.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6811CC176480019E911 /* EventList.m */; };
+		C2F8C6851CC1767B0019E911 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6841CC1767B0019E911 /* Event.m */; };
 		EB4453761CC148850018DCD9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453751CC148850018DCD9 /* main.m */; };
 		EB4453791CC148850018DCD9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453781CC148850018DCD9 /* AppDelegate.m */; };
 		EB44537C1CC148850018DCD9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB44537B1CC148850018DCD9 /* ViewController.m */; };
@@ -26,10 +28,14 @@
 		9E0B916B7944892C6268FC30 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		C2F8C6761CC14F0F0019E911 /* RequestHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestHelper.h; sourceTree = "<group>"; };
 		C2F8C6771CC14F0F0019E911 /* RequestHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestHelper.m; sourceTree = "<group>"; };
-		C2F8C6791CC156F20019E911 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
-		C2F8C67A1CC156F20019E911 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
-		C2F8C67C1CC157220019E911 /* EventList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventList.h; sourceTree = "<group>"; };
-		C2F8C67D1CC157220019E911 /* EventList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventList.m; sourceTree = "<group>"; };
+		C2F8C6791CC156F20019E911 /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
+		C2F8C67A1CC156F20019E911 /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Place.m; sourceTree = "<group>"; };
+		C2F8C67C1CC157220019E911 /* PlaceList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceList.h; sourceTree = "<group>"; };
+		C2F8C67D1CC157220019E911 /* PlaceList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceList.m; sourceTree = "<group>"; };
+		C2F8C6801CC176480019E911 /* EventList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventList.h; sourceTree = "<group>"; };
+		C2F8C6811CC176480019E911 /* EventList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventList.m; sourceTree = "<group>"; };
+		C2F8C6831CC1767B0019E911 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
+		C2F8C6841CC1767B0019E911 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		EB4453711CC148850018DCD9 /* Hack4Culture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hack4Culture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB4453751CC148850018DCD9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EB4453771CC148850018DCD9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -63,10 +69,14 @@
 		C2F8C67F1CC159680019E911 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C2F8C6791CC156F20019E911 /* Event.h */,
-				C2F8C67A1CC156F20019E911 /* Event.m */,
-				C2F8C67C1CC157220019E911 /* EventList.h */,
-				C2F8C67D1CC157220019E911 /* EventList.m */,
+				C2F8C6791CC156F20019E911 /* Place.h */,
+				C2F8C67A1CC156F20019E911 /* Place.m */,
+				C2F8C67C1CC157220019E911 /* PlaceList.h */,
+				C2F8C67D1CC157220019E911 /* PlaceList.m */,
+				C2F8C6801CC176480019E911 /* EventList.h */,
+				C2F8C6811CC176480019E911 /* EventList.m */,
+				C2F8C6831CC1767B0019E911 /* Event.h */,
+				C2F8C6841CC1767B0019E911 /* Event.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -261,9 +271,11 @@
 				EB4453931CC14D970018DCD9 /* EventImporterImpl.m in Sources */,
 				EB44537C1CC148850018DCD9 /* ViewController.m in Sources */,
 				EB4453791CC148850018DCD9 /* AppDelegate.m in Sources */,
-				C2F8C67B1CC156F20019E911 /* Event.m in Sources */,
+				C2F8C6851CC1767B0019E911 /* Event.m in Sources */,
+				C2F8C67B1CC156F20019E911 /* Place.m in Sources */,
+				C2F8C6821CC176480019E911 /* EventList.m in Sources */,
 				EB4453761CC148850018DCD9 /* main.m in Sources */,
-				C2F8C67E1CC157220019E911 /* EventList.m in Sources */,
+				C2F8C67E1CC157220019E911 /* PlaceList.m in Sources */,
 				C2F8C6781CC14F0F0019E911 /* RequestHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -6,12 +6,12 @@
 //  Copyright © 2016 Triad. All rights reserved.
 //
 
-#import "EventList.h"
+#import "PlaceList.h"
 
-@implementation EventList
+@implementation PlaceList
 
 + (NSValueTransformer *)itemsJSONTransformer {
-    return [MTLJSONAdapter arrayTransformerWithModelClass:Event.class];
+    return [MTLJSONAdapter arrayTransformerWithModelClass:Place.class];
 }
 
 
@@ -22,4 +22,5 @@
              @"next":@"next",
              @"items":@"items"};
 }
+
 @end

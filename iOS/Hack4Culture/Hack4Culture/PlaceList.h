@@ -8,12 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <Mantle.h>
-#import "Event.h"
+#import "Place.h"
 
-@interface EventList : MTLModel <MTLJSONSerializing>
+@interface PlaceList : MTLModel <MTLJSONSerializing>
 @property (nonatomic, copy, readonly) NSNumber *listSize;
 @property (nonatomic, copy, readonly) NSNumber *pageSize;
 @property (nonatomic, copy, readonly) NSString *next;
-@property (nonatomic, copy, readonly) NSArray<Event*> *items;
+@property (nonatomic, copy, readonly) NSArray<Place*> *items;
+
 
 @end

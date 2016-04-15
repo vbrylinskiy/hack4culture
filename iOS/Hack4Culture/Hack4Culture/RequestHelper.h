@@ -8,10 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <AFNetworking.h>
+#import <Mantle.h>
+#import "PlaceList.h"
 #import "EventList.h"
 
 @interface RequestHelper : NSObject
 @property (strong, nonatomic) AFURLSessionManager *manager;
 
-- (void) fetchIdentifiersForLat:(CGFloat) lat lon:(CGFloat) lon withBlock:(void (^)(EventList* list))block;
+- (void) fetchPlacesForLat:(CGFloat) lat lon:(CGFloat) lon withBlock:(void (^)(PlaceList* list))block;
+- (void) fetchEventsForPlaceId:(NSNumber*)placeId withBlock:(void (^)(EventList* list))block;
 @end

@@ -13,7 +13,7 @@
 
 
 -(void)importEventsForPolyline:(MKPolyline *)polyline withBlock:(void (^)(NSArray *, NSError *))block {
-    __block NSMutableArray *events = [NSMutableArray array];
+    __block NSMutableArray *places = [NSMutableArray array];
     __block RequestHelper* requestHelper = [[RequestHelper alloc] init];
     NSUInteger count = polyline.pointCount;
     CLLocationCoordinate2D *routeCoordinates = malloc(count * sizeof(CLLocationCoordinate2D));
@@ -22,18 +22,39 @@
     dispatch_group_t group = dispatch_group_create();
     
     for (int c=0; c < count; c++){
-        dispatch_group_async(group,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^ {
-            [requestHelper fetchIdentifiersForLat:routeCoordinates[c].latitude lon:routeCoordinates[c].longitude withBlock:^(EventList *list) {
-                [events addObjectsFromArray:list.items];
-            }];
-        });
+        dispatch_group_enter(group);
+        [requestHelper fetchPlacesForLat:routeCoordinates[c].latitude lon:routeCoordinates[c].longitude withBlock:^(PlaceList *list) {
+            [places addObjectsFromArray:list.items];
+            dispatch_group_leave(group);
+        }];
     }
     
-    dispatch_group_notify(group,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^ {
-        block(events, NULL);
+    dispatch_group_notify(group,dispatch_get_main_queue(), ^ {
+        [self getEventsForPlaces:places withBlock:block];
     });
-
     free(routeCoordinates);
 }
+
+
+-(void)getEventsForPlaces:(NSArray*)places withBlock:(void (^)(NSArray *, NSError *))block {
+    __block NSMutableArray *events = [NSMutableArray array];
+    __block RequestHelper* requestHelper = [[RequestHelper alloc] init];
+    dispatch_group_t group = dispatch_group_create();
+    
+    for (Place *place in places) {
+        dispatch_group_enter(group);
+        [requestHelper fetchEventsForPlaceId:place.identifier withBlock:^(EventList *list) {
+            [events addObjectsFromArray:list.items];
+            NSLog(@"updated event count %lu", (unsigned long)events.count);
+            dispatch_group_leave(group);
+        }];
+    }
+    dispatch_group_notify(group,dispatch_get_main_queue(), ^ {
+        block(events, NULL);
+    });
+    
+}
+
+
 
 @end

@@ -10,23 +10,20 @@
 #import <Mantle.h>
 
 @interface Event : MTLModel <MTLJSONSerializing>
+
 @property (nonatomic, copy, readonly) NSNumber *identifier;
 @property (nonatomic, copy, readonly) NSString *modified;
-@property (nonatomic, copy, readonly) NSString *title;
-@property (nonatomic, copy, readonly) NSString *shortTitle;
-@property (nonatomic, copy, readonly) NSString *alias;
-@property (nonatomic, copy, readonly) NSString *longDescription;
-@property (nonatomic, copy, readonly) NSString *externalLink;
-@property (nonatomic, copy, readonly) NSString *pageLink;
-@property (nonatomic, copy, readonly) NSDictionary *type;
-@property (nonatomic, copy, readonly) NSArray *categories;
-@property (nonatomic, copy, readonly) NSDictionary *mainImage;
-@property (nonatomic, copy, readonly) NSNumber *priority;
-@property (nonatomic, copy, readonly) NSString *source;
-@property (nonatomic, copy, readonly) NSString *language;
+@property (nonatomic, copy, readonly) NSString *url;
+@property (nonatomic, copy, readonly) NSString *eventDuration;
 @property (nonatomic, copy, readonly) NSDictionary *location;
 @property (nonatomic, copy, readonly) NSDictionary *address;
-@property (nonatomic, copy, readonly) NSString *lastPublished;
-
+@property (nonatomic, copy, readonly) NSDictionary *offer;
+@property (nonatomic, copy, readonly) NSString *placeName;
+@property (nonatomic, copy, readonly) NSNumber *premiere;
+@property (nonatomic, copy, readonly) NSString *ticketing;
+@property (nonatomic, copy, readonly) NSString *priceMin;
+@property (nonatomic, copy, readonly) NSString *priceMax;
+@property (nonatomic, copy, readonly) NSNumber *urbancardPremium;
+@property (nonatomic, copy, readonly) NSNumber *priority;
 
 @end

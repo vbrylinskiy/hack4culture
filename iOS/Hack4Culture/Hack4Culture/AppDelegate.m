@@ -14,6 +14,17 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+#warning TEST CODE
+//    CLLocationCoordinate2D coordinates[1];
+//    CLLocation *location = [[CLLocation alloc]initWithLatitude:51.1077491 longitude:17.0780540];
+//    CLLocationCoordinate2D coordinate = location.coordinate;
+//    coordinates[0] = coordinate;
+//    MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:1];
+//    [[[EventImporterImpl alloc] init] importEventsForPolyline:polyLine withBlock:^(NSArray *events, NSError *error) {
+//        NSLog(@"%@", events);
+//    }];
+    
     return YES;
 }
 
