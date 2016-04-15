@@ -13,5 +13,5 @@
 @protocol EventImporter <NSObject>
 
 @required
-- (void)importEventsForPolyline:(MKPolyline *)polyline withBlock:(void(^)(NSArray *events, NSError *error))block;
+- (void)importEventsForPolyline:(MKPolyline *)polyline withBlock:(void(^)(NSSet *events, NSError *error))block;
 @end

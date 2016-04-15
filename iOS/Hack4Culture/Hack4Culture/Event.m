@@ -18,7 +18,7 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
-             @"identifier":@"identifier",
+             @"identifier":@"id",
              @"modified":@"modified",
              @"url":@"url",
              @"eventDuration":@"eventDuration",
@@ -34,4 +34,13 @@
              @"priority":@"priority"
              };
 }
+
+-(BOOL)isEqual:(id)object {
+    if ([object isKindOfClass:Event.class]) {
+        return self.identifier == ((Event*)object).identifier;
+    } else {
+        return [super isEqual:object];
+    }
+}
+
 @end

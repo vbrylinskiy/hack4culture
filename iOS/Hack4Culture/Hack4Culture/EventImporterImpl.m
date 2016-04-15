@@ -8,11 +8,12 @@
 
 #import "EventImporterImpl.h"
 #import "RequestHelper.h"
+@import MapKit;
 
 @implementation EventImporterImpl
 
 
--(void)importEventsForPolyline:(MKPolyline *)polyline withBlock:(void (^)(NSArray *, NSError *))block {
+-(void)importEventsForPolyline:(MKPolyline *)polyline withBlock:(void (^)(NSSet *, NSError *))block {
     __block NSMutableArray *places = [NSMutableArray array];
     __block RequestHelper* requestHelper = [[RequestHelper alloc] init];
     NSUInteger count = polyline.pointCount;
@@ -21,7 +22,16 @@
     
     dispatch_group_t group = dispatch_group_create();
     
+    int lastC = 0;
     for (int c=0; c < count; c++){
+        
+        CLLocation *start = [[CLLocation alloc] initWithLatitude:routeCoordinates[c].latitude longitude:routeCoordinates[c].longitude];
+        CLLocation *end = [[CLLocation alloc] initWithLatitude:routeCoordinates[lastC].latitude longitude:routeCoordinates[lastC].longitude];
+        
+        if (c>0 && [start distanceFromLocation:end] < 100) {
+            continue;
+        }
+        lastC = c;
         dispatch_group_enter(group);
         [requestHelper fetchPlacesForLat:routeCoordinates[c].latitude lon:routeCoordinates[c].longitude withBlock:^(PlaceList *list) {
             [places addObjectsFromArray:list.items];
@@ -36,7 +46,7 @@
 }
 
 
--(void)getEventsForPlaces:(NSArray*)places withBlock:(void (^)(NSArray *, NSError *))block {
+-(void)getEventsForPlaces:(NSArray*)places withBlock:(void (^)(NSSet *, NSError *))block {
     __block NSMutableArray *events = [NSMutableArray array];
     __block RequestHelper* requestHelper = [[RequestHelper alloc] init];
     dispatch_group_t group = dispatch_group_create();
@@ -50,7 +60,10 @@
         }];
     }
     dispatch_group_notify(group,dispatch_get_main_queue(), ^ {
-        block(events, NULL);
+        
+        NSSet *set = [NSSet setWithArray:events];
+        
+        block(set, NULL);
     });
     
 }

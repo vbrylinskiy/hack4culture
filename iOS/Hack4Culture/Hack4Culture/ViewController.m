@@ -62,7 +62,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 //    for (int i = 0; i < self.polyline.pointCount; i++) {
 //        NSLog(@"%@", MKStringFromMapPoint(self.polyline.points[i]));
 //    }
-    [self.importer importEventsForPolyline:self.polyline withBlock:^(NSArray *events, NSError *error) {
+    [self.importer importEventsForPolyline:self.polyline withBlock:^(NSSet *events, NSError *error) {
         NSLog(@"%@", events);
     }];
 }
