@@ -100,14 +100,29 @@
         if (toRemoveId > -1) markers.splice(toRemoveId,1);
       }
 
+      function parseCords(marker) {
+        return marker.position.lat()+','+marker.position.lng();
+      }
+
       function calculateAndDisplayRoute(directionsDisplay, directionsService,
           markers, stepDisplay, map) {
+
+        //add waypoints
+        var waypoints = [];
+        if (markers.length > 2) {
+          for (i = 1; i < markers.length -1; i ++) {
+            waypoints.push({
+              location: parseCords(markers[i]),
+              stopover: true
+            })
+          }
+        }
 
         // Retrieve the start and end locations and create a DirectionsRequest using
         // WALKING directions.
         directionsService.route({
-          origin: markers[0].position.lat()+","+ markers[0].position.lng(),
-          destination:markers[markers.length - 1].position.lat()+","+ markers[markers.length-1].position.lng(),
+          origin: parseCords(markers[0]),
+          destination: parseCords(markers[markers.length - 1]),
           travelMode: google.maps.TravelMode.WALKING
         }, function(response, status) {
           // Route the directions and pass the response to a function to create
