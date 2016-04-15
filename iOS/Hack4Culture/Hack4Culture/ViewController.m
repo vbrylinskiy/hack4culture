@@ -10,6 +10,8 @@
 @import MapKit;
 #import "CustomMapView.h"
 #import "EventImporterImpl.h"
+#import "EventAnnotation.h"
+#import "Event.h"
 
 typedef NS_ENUM(NSUInteger, ConnectionType) {
     ConnectionTypeDirect,
@@ -20,6 +22,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 
 @property (nonatomic, weak) IBOutlet CustomMapView *mapView;
 @property (nonatomic, strong) NSMutableArray *annotations;
+@property (nonatomic, strong) NSMutableArray *eventAnnotations;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *doneButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *clearButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *undoButton;
@@ -47,6 +50,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     
     self.annotations = [NSMutableArray array];
     self.previousPolylines = [NSMutableArray array];
+    self.eventAnnotations = [NSMutableArray array];
     self.doneButton.enabled = NO;
     self.clearButton.enabled = NO;
     self.undoButton.enabled = NO;
@@ -62,8 +66,16 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 //    for (int i = 0; i < self.polyline.pointCount; i++) {
 //        NSLog(@"%@", MKStringFromMapPoint(self.polyline.points[i]));
 //    }
+    [self.mapView removeAnnotations:self.eventAnnotations];
+    [self.eventAnnotations removeAllObjects];
     [self.importer importEventsForPolyline:self.polyline withBlock:^(NSSet *events, NSError *error) {
-        NSLog(@"%@", events);
+        for (Event *event in events) {
+            EventAnnotation *ann = [[EventAnnotation alloc] init];
+            ann.coordinate = CLLocationCoordinate2DMake([event.location[@"lattiude"] floatValue], [event.location[@"longitude"] floatValue]);
+            [self.eventAnnotations addObject:ann];
+        }
+        
+        [self.mapView addAnnotations:self.eventAnnotations];
     }];
 }
 
@@ -245,6 +257,13 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     } else {
         pinView.annotation = annotation;
     }
+    
+    if ([annotation isKindOfClass:[EventAnnotation class]]) {
+        pinView.pinTintColor = [UIColor colorWithRed:70./255 green:171./255 blue:183./255 alpha:1.];
+    } else {
+        pinView.pinTintColor = [UIColor orangeColor];
+    }
+    
     return pinView;
 }
 
