@@ -18,10 +18,12 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 @interface ViewController () <MKMapViewDelegate>
 
 @property (nonatomic, weak) IBOutlet CustomMapView *mapView;
-@property (nonatomic, strong) NSMutableArray *points;
+@property (nonatomic, strong) NSMutableArray *annotations;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *doneButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *clearButton;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *undoButton;
 @property (nonatomic, strong) MKPolyline *polyline;
+@property (nonatomic, strong) NSMutableArray *previousPolylines;
 @property (nonatomic, strong) dispatch_queue_t queue;
 
 @end
@@ -41,9 +43,11 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mapViewTap:) name:MapViewDidTapMap object:self.mapView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mapViewLongTap:) name:MapViewDidLongTapMap object:self.mapView];
     
-    self.points = [NSMutableArray array];
+    self.annotations = [NSMutableArray array];
+    self.previousPolylines = [NSMutableArray array];
     self.doneButton.enabled = NO;
     self.clearButton.enabled = NO;
+    self.undoButton.enabled = NO;
     
     MKMapCamera *camera = [self.mapView.camera copy];
     camera.centerCoordinate = CLLocationCoordinate2DMake(51.109633, 17.032053);
@@ -58,20 +62,35 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 }
 
 - (IBAction)clear:(id)sender {
-    [self.points removeAllObjects];
+    [self.annotations removeAllObjects];
+    [self.previousPolylines removeAllObjects];
+    self.polyline = nil;
     [self.mapView removeAnnotations:self.mapView.annotations];
     [self.mapView removeOverlays:self.mapView.overlays];
     [self updateBarButtons];
 }
 
+- (IBAction)undo:(id)sender {
+    self.polyline = [self.previousPolylines lastObject];
+    [self.previousPolylines removeLastObject];
+    [self.mapView removeAnnotation:[self.annotations lastObject]];
+    [self.annotations removeLastObject];
+    [self.mapView removeOverlays:self.mapView.overlays];
+    if (self.polyline)
+        [self.mapView addOverlay:self.polyline];
+    [self updateBarButtons];
+}
+
 - (void)updateBarButtons {
-    if (self.points.count > 1) {
+    if (self.annotations.count > 1) {
         self.doneButton.enabled = YES;
+        self.undoButton.enabled = YES;
     } else {
+        self.undoButton.enabled = NO;
         self.doneButton.enabled = NO;
     }
     
-    if (self.points.count > 0) {
+    if (self.annotations.count > 0) {
         self.clearButton.enabled = YES;
     } else {
         self.clearButton.enabled = NO;
@@ -91,28 +110,28 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     }
     
     CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
-    [self.points addObject:location];
     
     [self updateBarButtons];
     
     MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
     pointAnnotation.coordinate = coord;
-    pointAnnotation.title = [NSString stringWithFormat:@"Annotation %i", [self.points indexOfObject:location]];
+    pointAnnotation.title = [NSString stringWithFormat:@"Annotation %i", [self.annotations indexOfObject:location]];
     pointAnnotation.subtitle = [location description];
     
     [[self mapView] addAnnotation:pointAnnotation];
+    [self.annotations addObject:pointAnnotation];
     
     [self addRouteToLastPointWithType:ConnectionTypeRoute];
 }
 
 - (void)addRouteToLastPointWithType:(ConnectionType)type {
-    if (self.points.count < 2)
+    if (self.annotations.count < 2)
         return;
     
     dispatch_async(self.queue, ^{
         if (type == ConnectionTypeRoute) {
-            MKMapItem* mapItemSrc = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:[(CLLocation *)self.points[self.points.count-2] coordinate] addressDictionary:nil]];
-            MKMapItem *mapItemDst = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:[(CLLocation *)self.points[self.points.count-1] coordinate] addressDictionary:nil]];
+            MKMapItem* mapItemSrc = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:[(MKPointAnnotation *)self.annotations[self.annotations.count-2] coordinate] addressDictionary:nil]];
+            MKMapItem *mapItemDst = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:[(MKPointAnnotation *)self.annotations[self.annotations.count-1] coordinate] addressDictionary:nil]];
             
             MKDirectionsRequest *directionsRequest = [MKDirectionsRequest new];
             [directionsRequest setTransportType:MKDirectionsTransportTypeWalking];
@@ -143,8 +162,8 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 - (void)addDirectRoute {
     CLLocationCoordinate2D *coordinates = (CLLocationCoordinate2D *)calloc(2, sizeof(CLLocationCoordinate2D));
     
-    coordinates[0] = CLLocationCoordinate2DMake([(CLLocation *)self.points[self.points.count-2] coordinate].latitude, [(CLLocation *)self.points[self.points.count-2] coordinate].longitude);
-    coordinates[1] = CLLocationCoordinate2DMake([(CLLocation *)self.points[self.points.count-1] coordinate].latitude, [(CLLocation *)self.points[self.points.count-1] coordinate].longitude);
+    coordinates[0] = [[self.annotations objectAtIndex:self.annotations.count - 2] coordinate];
+    coordinates[1] = [[self.annotations objectAtIndex:self.annotations.count - 1] coordinate];
 
     
     // create a polyline with all cooridnates
@@ -170,6 +189,9 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         coordinates[i+self.polyline.pointCount] = MKCoordinateForMapPoint(polyline.points[i]);
     }
     
+    if (self.polyline)
+        [self.previousPolylines addObject:self.polyline];
+    
     // create a polyline with all cooridnates
     self.polyline = [MKPolyline polylineWithCoordinates:coordinates count:pointsCount];
     
@@ -190,44 +212,18 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         return;
     }
     
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
-    [self.points addObject:location];
+//    CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
+//    [self.annotations addObject:location];
     
     [self updateBarButtons];
     
     MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
     pointAnnotation.coordinate = coord;
-    pointAnnotation.title = [NSString stringWithFormat:@"Annotation %i", [self.points indexOfObject:location]];
-    pointAnnotation.subtitle = [location description];
     
     [[self mapView] addAnnotation:pointAnnotation];
+    [self.annotations addObject:pointAnnotation];
     
     [self addRouteToLastPointWithType:ConnectionTypeDirect];
-}
-
-- (void)drawLine {
-    if (self.points.count < 2)
-        return;
-    
-    // remove polyline if one exists
-//    [self.mapView removeOverlay:self.polyline];
-    
-    NSUInteger coordinatesCount = [self.points count];
-    CLLocationCoordinate2D *coordinates = (CLLocationCoordinate2D *)calloc(coordinatesCount, sizeof(CLLocationCoordinate2D));
-    
-    for (int i=0; i < coordinatesCount; i++) {
-        CLLocation *coordObj = (CLLocation *)[self.points objectAtIndex:i];
-        coordinates[i] = CLLocationCoordinate2DMake(coordObj.coordinate.latitude, coordObj.coordinate.longitude);
-    }
-    
-    // create a polyline with all cooridnates
-    MKPolyline *polyline = [MKPolyline polylineWithCoordinates:coordinates count:self.points.count];
-    
-    free(coordinates);
-    
-    self.polyline = polyline;
-    
-    [self.mapView addOverlay:polyline level:MKOverlayLevelAboveRoads];
 }
 
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
@@ -257,6 +253,14 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 
 -(void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     NSLog(@"here");
+}
+
+- (IBAction)changeType:(UISegmentedControl *)sender {
+    if (sender.selectedSegmentIndex == 0) {
+        self.mapView.mapType = MKMapTypeStandard;
+    } else {
+        self.mapView.mapType = MKMapTypeSatellite;
+    }
 }
 
 @end
