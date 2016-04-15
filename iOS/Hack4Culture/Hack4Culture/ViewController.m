@@ -10,6 +10,11 @@
 @import MapKit;
 #import "CustomMapView.h"
 
+typedef NS_ENUM(NSUInteger, ConnectionType) {
+    ConnectionTypeDirect,
+    ConnectionTypeRoute
+};
+
 @interface ViewController () <MKMapViewDelegate>
 
 @property (nonatomic, weak) IBOutlet CustomMapView *mapView;
@@ -17,6 +22,7 @@
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *doneButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *clearButton;
 @property (nonatomic, strong) MKPolyline *polyline;
+@property (nonatomic, strong) dispatch_queue_t queue;
 
 @end
 
@@ -30,7 +36,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mapViewTap:) name:MapViewDidTapMap object:self.mapView];
+    self.queue = dispatch_queue_create("com.requests.queue", DISPATCH_QUEUE_SERIAL);
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mapViewTap:) name:MapViewDidTapMap object:self.mapView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mapViewLongTap:) name:MapViewDidLongTapMap object:self.mapView];
     
     self.points = [NSMutableArray array];
@@ -94,7 +102,80 @@
     
     [[self mapView] addAnnotation:pointAnnotation];
     
-    [self drawLine];
+    [self addRouteToLastPointWithType:ConnectionTypeRoute];
+}
+
+- (void)addRouteToLastPointWithType:(ConnectionType)type {
+    if (self.points.count < 2)
+        return;
+    
+    dispatch_async(self.queue, ^{
+        if (type == ConnectionTypeRoute) {
+            MKMapItem* mapItemSrc = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:[(CLLocation *)self.points[self.points.count-2] coordinate] addressDictionary:nil]];
+            MKMapItem *mapItemDst = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:[(CLLocation *)self.points[self.points.count-1] coordinate] addressDictionary:nil]];
+            
+            MKDirectionsRequest *directionsRequest = [MKDirectionsRequest new];
+            [directionsRequest setTransportType:MKDirectionsTransportTypeWalking];
+            [directionsRequest setSource:mapItemSrc];
+            [directionsRequest setDestination:mapItemDst];
+            
+            MKDirections *direction = [[MKDirections alloc] initWithRequest:directionsRequest];
+            
+            dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+            
+            [direction calculateDirectionsWithCompletionHandler: ^(MKDirectionsResponse *response, NSError *error) {
+                if (!error && response.routes.count > 0) {
+                    MKRoute *route = [response.routes firstObject];
+                    [self addPolyline:route.polyline];
+                } else {
+                    [self addDirectRoute];
+                }
+                dispatch_semaphore_signal(sema);
+            }];
+            
+            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        } else if (type == ConnectionTypeDirect) {
+            [self addDirectRoute];
+        }
+    });
+}
+
+- (void)addDirectRoute {
+    CLLocationCoordinate2D *coordinates = (CLLocationCoordinate2D *)calloc(2, sizeof(CLLocationCoordinate2D));
+    
+    coordinates[0] = CLLocationCoordinate2DMake([(CLLocation *)self.points[self.points.count-2] coordinate].latitude, [(CLLocation *)self.points[self.points.count-2] coordinate].longitude);
+    coordinates[1] = CLLocationCoordinate2DMake([(CLLocation *)self.points[self.points.count-1] coordinate].latitude, [(CLLocation *)self.points[self.points.count-1] coordinate].longitude);
+
+    
+    // create a polyline with all cooridnates
+    MKPolyline *polyline = [MKPolyline polylineWithCoordinates:coordinates count:2];
+    
+    free(coordinates);
+    
+    [self addPolyline:polyline];
+}
+
+- (void)addPolyline:(MKPolyline *)polyline {
+    [self.mapView removeOverlays:self.mapView.overlays];
+    
+    NSUInteger pointsCount = self.polyline.pointCount + polyline.pointCount;
+    
+    CLLocationCoordinate2D *coordinates = (CLLocationCoordinate2D *)calloc(pointsCount, sizeof(CLLocationCoordinate2D));
+    
+    for (int i=0; i < self.polyline.pointCount; i++) {
+        coordinates[i] = MKCoordinateForMapPoint(self.polyline.points[i]);
+    }
+    
+    for (int i=0; i < polyline.pointCount; i++) {
+        coordinates[i+self.polyline.pointCount] = MKCoordinateForMapPoint(polyline.points[i]);
+    }
+    
+    // create a polyline with all cooridnates
+    self.polyline = [MKPolyline polylineWithCoordinates:coordinates count:pointsCount];
+    
+    free(coordinates);
+    
+    [self.mapView addOverlay:self.polyline];
 }
 
 - (void)mapViewLongTap:(NSNotification*)notif {
@@ -121,7 +202,7 @@
     
     [[self mapView] addAnnotation:pointAnnotation];
     
-    [self drawLine];
+    [self addRouteToLastPointWithType:ConnectionTypeDirect];
 }
 
 - (void)drawLine {
@@ -168,7 +249,7 @@
 
 - (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id <MKOverlay>)overlay
 {
-    MKPolylineRenderer* lineView = [[MKPolylineRenderer alloc] initWithPolyline:self.polyline];
+    MKPolylineRenderer* lineView = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
     lineView.strokeColor = [UIColor colorWithRed:70./255 green:171./255 blue:183./255 alpha:1.];
     lineView.lineWidth = 7;
     return lineView;
