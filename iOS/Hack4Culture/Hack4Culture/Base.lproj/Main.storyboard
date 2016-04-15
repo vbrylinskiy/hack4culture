@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -33,12 +34,33 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="e37-D3-Ebp">
-                        <barButtonItem key="leftBarButtonItem" title="Clear" id="Vjh-6t-WZ7">
-                            <color key="tintColor" red="0.27521073190789475" green="0.66866262335526316" blue="0.71903268914473684" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="title"/>
+                        <leftBarButtonItems>
+                            <barButtonItem title="Clear" id="Vjh-6t-WZ7">
+                                <color key="tintColor" red="0.27521073190789475" green="0.66866262335526316" blue="0.71903268914473684" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="clear:" destination="BYZ-38-t0r" id="Ok4-la-BhZ"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Undo" id="SXy-4Y-Esc">
+                                <color key="tintColor" red="0.27521073190000001" green="0.66866262340000004" blue="0.71903268909999996" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="undo:" destination="BYZ-38-t0r" id="mlb-ig-fGu"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="T4u-Pe-fTb">
+                            <rect key="frame" x="180" y="7" width="240" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="Standard"/>
+                                <segment title="Satellite"/>
+                            </segments>
+                            <color key="tintColor" red="0.27521073190000001" green="0.66866262340000004" blue="0.71903268909999996" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <action selector="clear:" destination="BYZ-38-t0r" id="Ok4-la-BhZ"/>
+                                <action selector="changeType:" destination="BYZ-38-t0r" eventType="valueChanged" id="YZD-vu-e3T"/>
                             </connections>
-                        </barButtonItem>
+                        </segmentedControl>
                         <barButtonItem key="rightBarButtonItem" title="Done" id="fUO-0a-WDr">
                             <color key="tintColor" red="0.27521073190000001" green="0.66866262340000004" blue="0.71903268909999996" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
@@ -50,6 +72,7 @@
                         <outlet property="clearButton" destination="Vjh-6t-WZ7" id="DV7-Lu-3Mh"/>
                         <outlet property="doneButton" destination="fUO-0a-WDr" id="3aY-Ju-tkw"/>
                         <outlet property="mapView" destination="KGI-M8-uzm" id="1Zw-Xm-qpc"/>
+                        <outlet property="undoButton" destination="SXy-4Y-Esc" id="fps-bC-Xs0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
