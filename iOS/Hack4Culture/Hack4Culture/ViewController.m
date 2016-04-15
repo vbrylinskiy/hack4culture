@@ -9,6 +9,7 @@
 #import "ViewController.h"
 @import MapKit;
 #import "CustomMapView.h"
+#import "EventImporterImpl.h"
 
 typedef NS_ENUM(NSUInteger, ConnectionType) {
     ConnectionTypeDirect,
@@ -25,6 +26,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 @property (nonatomic, strong) MKPolyline *polyline;
 @property (nonatomic, strong) NSMutableArray *previousPolylines;
 @property (nonatomic, strong) dispatch_queue_t queue;
+@property (nonatomic, strong) EventImporterImpl *importer;
 
 @end
 
@@ -53,12 +55,16 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     camera.centerCoordinate = CLLocationCoordinate2DMake(51.109633, 17.032053);
     camera.altitude = 1000.;
     [self.mapView setCamera:camera];
+    self.importer = [[EventImporterImpl alloc] init];
 }
 
 - (IBAction)done:(id)sender {
-    for (int i = 0; i < self.polyline.pointCount; i++) {
-        NSLog(@"%@", MKStringFromMapPoint(self.polyline.points[i]));
-    }
+//    for (int i = 0; i < self.polyline.pointCount; i++) {
+//        NSLog(@"%@", MKStringFromMapPoint(self.polyline.points[i]));
+//    }
+    [self.importer importEventsForPolyline:self.polyline withBlock:^(NSArray *events, NSError *error) {
+        NSLog(@"%@", events);
+    }];
 }
 
 - (IBAction)clear:(id)sender {
@@ -111,7 +117,6 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     
     CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
     
-    [self updateBarButtons];
     
     MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
     pointAnnotation.coordinate = coord;
@@ -122,6 +127,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     [self.annotations addObject:pointAnnotation];
     
     [self addRouteToLastPointWithType:ConnectionTypeRoute];
+    [self updateBarButtons];
 }
 
 - (void)addRouteToLastPointWithType:(ConnectionType)type {
@@ -215,7 +221,6 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 //    CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
 //    [self.annotations addObject:location];
     
-    [self updateBarButtons];
     
     MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
     pointAnnotation.coordinate = coord;
@@ -224,6 +229,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     [self.annotations addObject:pointAnnotation];
     
     [self addRouteToLastPointWithType:ConnectionTypeDirect];
+    [self updateBarButtons];
 }
 
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
