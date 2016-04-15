@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Mantle.h>
+#import "Location.h"
 
 @interface Event : MTLModel <MTLJSONSerializing>
 

@@ -7,8 +7,14 @@
 //
 
 #import "Event.h"
+#import "Location.h"
 
 @implementation Event
+
+//+ (NSValueTransformer *)locationJSONTransformer {
+//    return [MTLJSONAdapter dictionaryTransformerWithModelClass:Location.class];
+//}
+
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{

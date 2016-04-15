@@ -20,7 +20,7 @@
 }
 
 - (void) fetchEventsForPlaceId:(NSNumber*)placeId withBlock:(void (^)(EventList* list))block {
-    NSString *address = [NSString stringWithFormat:@"http://go.wroclaw.pl/api/v1.0/events?key=928012495102009594014322187345717861707&place-id=%d",[placeId intValue]];
+    NSString *address = [NSString stringWithFormat:@"http://go.wroclaw.pl/api/v1.0/events?key=928012495102009594014322187345717861707&time-from=1460753233910&time-to=1462053600000&place-id=%d",[placeId intValue]];
     NSURL *URL = [NSURL URLWithString:address];
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     
