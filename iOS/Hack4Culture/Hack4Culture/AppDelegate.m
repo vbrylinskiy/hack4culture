@@ -14,8 +14,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    RequestHelper *rh = [[RequestHelper alloc] init];
-    [rh fetchIdentifiersForLat:51.1078850 lon:17.0385380];
     return YES;
 }
 
