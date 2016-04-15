@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "RequestHelper.h"
+#import "EventImporterImpl.h"
 
 @implementation AppDelegate
 

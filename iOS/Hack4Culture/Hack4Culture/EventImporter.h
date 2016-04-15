@@ -14,5 +14,4 @@
 
 @required
 - (void)importEventsForPolyline:(MKPolyline *)polyline withBlock:(void(^)(NSArray *events, NSError *error))block;
-
 @end
