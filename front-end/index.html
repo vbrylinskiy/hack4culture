@@ -123,6 +123,7 @@
         directionsService.route({
           origin: parseCords(markers[0]),
           destination: parseCords(markers[markers.length - 1]),
+          waypoints: waypoints,
           travelMode: google.maps.TravelMode.WALKING
         }, function(response, status) {
           // Route the directions and pass the response to a function to create
