@@ -8,37 +8,51 @@
 
 #import "ViewController.h"
 @import MapKit;
+#import "CustomMapView.h"
 
 @interface ViewController () <MKMapViewDelegate>
 
-@property (nonatomic, weak) IBOutlet MKMapView *mapView;
+@property (nonatomic, weak) IBOutlet CustomMapView *mapView;
 @property (nonatomic, strong) NSMutableArray *points;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *doneButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *clearButton;
+@property (nonatomic, strong) MKPolyline *polyline;
 
 @end
 
 @implementation ViewController
 
 
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-    [self.mapView addGestureRecognizer:gestureRecognizer];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mapViewTap:) name:MapViewDidTapMap object:self.mapView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mapViewLongTap:) name:MapViewDidLongTapMap object:self.mapView];
+    
     self.points = [NSMutableArray array];
     self.doneButton.enabled = NO;
     self.clearButton.enabled = NO;
+    
+    MKMapCamera *camera = [self.mapView.camera copy];
+    camera.centerCoordinate = CLLocationCoordinate2DMake(51.109633, 17.032053);
+    camera.altitude = 1000.;
+    [self.mapView setCamera:camera];
 }
 
 - (IBAction)done:(id)sender {
-    
+    for (int i = 0; i < self.polyline.pointCount; i++) {
+        NSLog(@"%@", MKStringFromMapPoint(self.polyline.points[i]));
+    }
 }
 
 - (IBAction)clear:(id)sender {
     [self.points removeAllObjects];
     [self.mapView removeAnnotations:self.mapView.annotations];
+    [self.mapView removeOverlays:self.mapView.overlays];
     [self updateBarButtons];
 }
 
@@ -56,9 +70,17 @@
     }
 }
 
-- (void)handleTap:(UITapGestureRecognizer *)tapGesture {
-    CGPoint point = [tapGesture locationInView:self.mapView];
+- (void)mapViewTap:(NSNotification*)notif {
+    
+    CGPoint point = [self.mapView.tapGesture locationInView:self.mapView];
     CLLocationCoordinate2D coord = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
+    
+    id v = [self.mapView hitTest:point withEvent:nil];
+    
+    if ([v isKindOfClass:[MKPinAnnotationView class]]) {
+        [self.mapView selectAnnotation:[v annotation] animated:YES];
+        return;
+    }
     
     CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
     [self.points addObject:location];
@@ -71,6 +93,60 @@
     pointAnnotation.subtitle = [location description];
     
     [[self mapView] addAnnotation:pointAnnotation];
+    
+    [self drawLine];
+}
+
+- (void)mapViewLongTap:(NSNotification*)notif {
+    
+    CGPoint point = [self.mapView.longPressGesture locationInView:self.mapView];
+    CLLocationCoordinate2D coord = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
+
+    id v = [self.mapView hitTest:point withEvent:nil];
+    
+    if ([v isKindOfClass:[MKPinAnnotationView class]]) {
+        [self.mapView selectAnnotation:[v annotation] animated:YES];
+        return;
+    }
+    
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
+    [self.points addObject:location];
+    
+    [self updateBarButtons];
+    
+    MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
+    pointAnnotation.coordinate = coord;
+    pointAnnotation.title = [NSString stringWithFormat:@"Annotation %i", [self.points indexOfObject:location]];
+    pointAnnotation.subtitle = [location description];
+    
+    [[self mapView] addAnnotation:pointAnnotation];
+    
+    [self drawLine];
+}
+
+- (void)drawLine {
+    if (self.points.count < 2)
+        return;
+    
+    // remove polyline if one exists
+//    [self.mapView removeOverlay:self.polyline];
+    
+    NSUInteger coordinatesCount = [self.points count];
+    CLLocationCoordinate2D *coordinates = (CLLocationCoordinate2D *)calloc(coordinatesCount, sizeof(CLLocationCoordinate2D));
+    
+    for (int i=0; i < coordinatesCount; i++) {
+        CLLocation *coordObj = (CLLocation *)[self.points objectAtIndex:i];
+        coordinates[i] = CLLocationCoordinate2DMake(coordObj.coordinate.latitude, coordObj.coordinate.longitude);
+    }
+    
+    // create a polyline with all cooridnates
+    MKPolyline *polyline = [MKPolyline polylineWithCoordinates:coordinates count:self.points.count];
+    
+    free(coordinates);
+    
+    self.polyline = polyline;
+    
+    [self.mapView addOverlay:polyline level:MKOverlayLevelAboveRoads];
 }
 
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
@@ -80,7 +156,7 @@
         // If an existing pin view was not available, create one.
         pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"CustomPinAnnotationView"];
         pinView.animatesDrop = YES;
-        pinView.canShowCallout = YES;
+        pinView.canShowCallout = NO;
 //        pinView.image = [UIImage imageNamed:@"pizza_slice_32.png"];
 //        pinView.calloutOffset = CGPointMake(0, 32);
     } else {
@@ -89,5 +165,17 @@
     return pinView;
 }
 
+
+- (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id <MKOverlay>)overlay
+{
+    MKPolylineRenderer* lineView = [[MKPolylineRenderer alloc] initWithPolyline:self.polyline];
+    lineView.strokeColor = [UIColor colorWithRed:70./255 green:171./255 blue:183./255 alpha:1.];
+    lineView.lineWidth = 7;
+    return lineView;
+}
+
+-(void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    NSLog(@"here");
+}
 
 @end
