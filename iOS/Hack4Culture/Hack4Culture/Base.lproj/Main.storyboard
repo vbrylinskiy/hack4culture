@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1713" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1713" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="NnL-C6-mga">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
@@ -17,8 +17,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="KGI-M8-uzm">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="KGI-M8-uzm">
                                 <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="rAb-D4-H0U"/>
+                                </connections>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -29,9 +32,47 @@
                             <constraint firstItem="KGI-M8-uzm" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="vDr-tD-wzw"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="e37-D3-Ebp">
+                        <barButtonItem key="leftBarButtonItem" title="Clear" id="Vjh-6t-WZ7">
+                            <color key="tintColor" red="0.27521073190789475" green="0.66866262335526316" blue="0.71903268914473684" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="clear:" destination="BYZ-38-t0r" id="Ok4-la-BhZ"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="fUO-0a-WDr">
+                            <color key="tintColor" red="0.27521073190000001" green="0.66866262340000004" blue="0.71903268909999996" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="done:" destination="BYZ-38-t0r" id="fDp-77-HQO"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="clearButton" destination="Vjh-6t-WZ7" id="DV7-Lu-3Mh"/>
+                        <outlet property="doneButton" destination="fUO-0a-WDr" id="3aY-Ju-tkw"/>
+                        <outlet property="mapView" destination="KGI-M8-uzm" id="1Zw-Xm-qpc"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="368" y="345"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="5ct-6y-GbQ">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="NnL-C6-mga" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="GqB-8q-01T">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="peT-1I-GJl"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="B0B-yX-7KF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="368" y="-543"/>
         </scene>
     </scenes>
 </document>
