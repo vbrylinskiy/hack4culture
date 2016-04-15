@@ -48,6 +48,7 @@
     var directionsService;
     var directionsDisplay;
     var stepDisplay;
+    var markerListener;
 
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -59,7 +60,7 @@
         directionsDisplay = new google.maps.DirectionsRenderer({map: map});
         stepDisplay = new google.maps.InfoWindow;
 
-        map.addListener('click', function(e) {
+        markerListener = map.addListener('click', function(e) {
           placeMarkerAndPanTo(e.latLng, map);
         });
 
@@ -142,8 +143,11 @@
             //hide the button
             $('#endRoute').fadeOut();
 
-            //remove the markers, because we'll get new ones
+            //remove the markers, because we'll get new ones from direction
             removeAllMarkers();
+
+            //not allowing to add markers after route is planned
+            google.maps.event.removeListener(markerListener);
    
           } else {
             window.alert('Directions request failed due to ' + status);
