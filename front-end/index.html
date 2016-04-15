@@ -34,13 +34,39 @@
       #endRoute {
         display: none;
       }
+      .gm-style-iw h1{
+        font-size:2em;
+      }
+      .gm-style-iw img {
+        margin-right:20px;
+        float:left;
+      }
+      #spinner-modal{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index:200;
+        top:0;
+        left:0;
+        text-align: center;
+        display: none;
+      }
+      #spinner-modal img {
+        margin-top:200px;
+      }
+      #spinner-modal h1 {
+        color:white;
+      }
     </style>
   </head>
   <body>
-  <div class="alert alert-danger msg">Click map to start adding route points. <br/> (If you made a mistake, click marker to remove it).</div>
-  <button class="btn btn-primary btn-lg msg" id="endRoute">Finished planning?</button> 
+  <div class="alert alert-danger msg">Kliknij by dodać punkty wycieczki. <br/> (W razie pomyłki możesz kliknąć na marker żeby go usunąć).</div>
+  <button class="btn btn-primary btn-lg msg" id="endRoute">Skończone?</button> 
     <div id="map">     
     </div>
+    <div id="spinner-modal"><img src="rolling.svg">
+    <h1>Szukamy wydarzeń kulturalnych dla Ciebie...</h1></div>
     <script>
     var map;
     var markers = [];
@@ -63,36 +89,80 @@
         stepDisplay = new google.maps.InfoWindow;
 
         markerListener = map.addListener('click', function(e) {
-          placeMarkerAndPanTo(e.latLng, map);
+          placeRoutePoint(e.latLng);
         });
 
       }    
 
       $('#endRoute').on("click",function(){
         
-         if (markers.length > 1) calculateAndDisplayRoute(directionsDisplay, directionsService, markers, stepDisplay, map);
+         if (markers.length > 1) {
+            calculateAndDisplayRoute(directionsDisplay, directionsService, markers, stepDisplay, map);
+            $('#spinner-modal').fadeIn();
+          }
       })
 
-      function placeMarkerAndPanTo(latLng, map) {
+      function placeRoutePoint(latLng) {
+        
         var marker = new google.maps.Marker({
           position: latLng,
           map: map
         });
         marker.addListener("click", showRemoveMarkerDialog)
         markers.push(marker);
-        map.panTo(latLng);   
-        if (markers.length === 1) $('.alert').html('One more!');
+
+        map.panTo(latLng); 
+        if (markers.length === 1) $('.alert').html('Dodaj przynajmniej jeszcze jeden!');
         if (markers.length > 1) {
             $('#endRoute').fadeIn();    
             $('.alert').hide();
           }
+
+      }
+
+      function placeMarker(latLng, label, desc, imageSrc, start, end, url) {
+        
+
+        var image = {
+            url: 'http://uxrepo.com/static/icon-sets/elegant/svg/icon_pin.svg',
+            // This marker is 20 pixels wide by 32 pixels high.
+            size: new google.maps.Size(20, 32),
+            // The origin for this image is (0, 0).
+            origin: new google.maps.Point(0, 0),
+            // The anchor for this image is the base of the flagpole at (0, 32).
+            anchor: new google.maps.Point(0, 32)
+          };
+        
+        var marker = new google.maps.Marker({
+          position: latLng,
+          map: map,
+          title: label,
+          icon: {
+            path: "M50,16.072c-15.539,0-28.135,12.597-28.135,28.135C21.865,65.952,50,83.928,50,83.928S78.135,65.4,78.135,44.207  C78.135,28.669,65.539,16.072,50,16.072z M50,64.155c-11.042,0-19.994-8.952-19.994-19.994c0-11.043,8.952-19.994,19.994-19.994  c11.043,0,19.994,8.952,19.994,19.994C69.994,55.203,61.042,64.155,50,64.155z",
+            scale:8,
+            fillColor: 'blue',
+            fillOpacity: 0.7,
+            strokeColor: 'blue',
+            scale: 0.5,
+            strokeWeight: 0.5
+          } ,
+          animation: google.maps.Animation.DROP
+        });
+
+        marker.info = new google.maps.InfoWindow({
+          content: "<h1>"+label+"</h1><a href='"+url+"' target='_blank'>Więcej</a><p><em>Poczatek: "+start+"</em><br/><em>Koniec: "+end+"</em></p><img src='"+imageSrc+"'/>"+desc
+        });
+
+        marker.addListener("click", function(){
+          marker.info.open(map,marker);
+        });
       }
 
       function showRemoveMarkerDialog() {
         if (confirm("Do you want to remove this point?")) {
           removeMarker(this);
         }
-      }
+      } 
 
       function removeMarker(toRemove) {
         toRemove.setMap(null);
@@ -169,7 +239,6 @@
             $.when.apply($, dfds).done(function(){
               var args = Array.prototype.slice.call(arguments);
               args.forEach(function(location){
-                console.log(location.lat());
                 finalMarkers.push(parseCords(location))
               })
                 
@@ -196,24 +265,55 @@
       }
 
       function fetchEvents(){
-        getLocation(finalMarkers[0]);
 
-        
-        finalMarkers.forEach(function(location) {
-
+        var events = [];
+        finalMarkers.forEach(function(finalMarker){
+          getNearbyLocations(finalMarker).done(function(results){
+            console.log('got nearby locations');
+              results.items.forEach(function(location){
+                getEventsForLocation(location.id).done(function(results){
+                  $('#spinner-modal').fadeOut();
+                  if (results.items.length) {
+                        results.items.forEach(function(event) {
+                        events.push({
+                          "title": event.offer.title,
+                          "desc": event.offer.longDescription,
+                          "start": event.startDate,
+                          "end": event.endDate,
+                          "url": event.offer.pageLink,
+                          "thumb": event.offer.mainImage.thumbnail
+                        })       
+                          placeMarker({
+                           "lat": event.location.lattiude,
+                           "lng": event.location.longitude
+                          }, event.offer.title, event.offer.longDescription, event.offer.mainImage.thumbnail, event.startDate.split("T").join(", "), event.endDate.split("T").join(", "), event.offer.pageLink);
+                    });
+                  }
+                  
+                });
+              })
+          });
         })
+      
       }
 
-      function getLocation(location){
+      function getEventsForLocation(locationId) {
+        var timeFrom = +(new Date());
+        var timeTo = +(new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000));
+        
+        var url = "http://go.wroclaw.pl/api/v1.0/events?place-id="+locationId+"&key=928012495102009594014322187345717861707&time-from="+timeFrom+"&time-to="+timeTo;
+        
+        return $.get(url);
+      }
+
+      function getNearbyLocations(location) {
+        console.log('geting nearby locations');
         var url = "http://go.wroclaw.pl/api/v1.0/places/nearLocation/"+location+"?key=928012495102009594014322187345717861707";
-        $.get(url).done(function(r){
-          console.log(r);
-        })
-        
+        return $.get(url);
       }
+        
+      
     </script>
- 
-    //928012495102009594014322187345717861707
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8Xi1jWD6A14ySigUkN8QKnDjK1HWw1tY&callback=initMap">
     </script>
