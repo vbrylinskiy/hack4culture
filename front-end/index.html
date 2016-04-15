@@ -12,38 +12,111 @@
         height: 100%;
         margin: 0;
         padding: 0;
+        position: relative; 
       }
       #map {
         height: 100%;
+  
+      }
+      .msg{
+        position: absolute;
+        top:20px;
+        left:calc(50% - 100px);
+        z-index:100;
+        box-shadow: 6px 9px 10px -3px rgba(0,0,0,0.5);
+        width: 200px;
+        text-align: center;
+      }
+
+      #endRoute {
+        display: none;
       }
     </style>
   </head>
   <body>
-    <div id="map"></div>
+  <div class="alert alert-danger msg">Click map to start adding route points.</div>
+  <button class="btn btn-primary btn-lg msg" id="endRoute">Finished planning?</button> 
+    <div id="map">     
+    </div>
     <script>
     var map;
     var markers = [];
+
+    var directionsService;
+    var directionsDisplay;
+    var stepDisplay;
+
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 14   ,
           center: {lat: 51.1077076 , lng: 17.0776118 }
         });
 
+        directionsService = new google.maps.DirectionsService;
+        directionsDisplay = new google.maps.DirectionsRenderer({map: map});
+        stepDisplay = new google.maps.InfoWindow;
+
         map.addListener('click', function(e) {
           placeMarkerAndPanTo(e.latLng, map);
         });
+
+
       }
+
+    
+
+      $('#endRoute').on("click",function(){
+        
+         if (markers.length > 1) calculateAndDisplayRoute(directionsDisplay, directionsService, markers, stepDisplay, map);
+      })
 
       function placeMarkerAndPanTo(latLng, map) {
         var marker = new google.maps.Marker({
           position: latLng,
           map: map
         });
-        marker.addListener("click", function(){
-          console.log("marker clicked:", marker);
-        })
+        marker.addListener("click", showRemoveMarkerDialog)
         markers.push(marker);
-        map.panTo(latLng);
+        map.panTo(latLng);   
+        if (markers.length === 1) $('.alert').html('One more!');
+        if (markers.length > 1) {
+            $('#endRoute').fadeIn();    
+            $('.alert').hide();
+          }
+      }
+
+      function showRemoveMarkerDialog() {
+        if (confirm("Do you want to remove this point?")) {
+          removeMarker(this);
+        }
+      }
+
+      function removeMarker(toRemove) {
+        toRemove.setMap(null);
+        var toRemoveId = markers.indexOf(toRemove);
+        if (toRemoveId > -1) markers.splice(toRemoveId,1);
+      }
+
+      function calculateAndDisplayRoute(directionsDisplay, directionsService,
+          markers, stepDisplay, map) {
+
+        // Retrieve the start and end locations and create a DirectionsRequest using
+        // WALKING directions.
+        directionsService.route({
+          origin: markers[0].position.lat()+","+ markers[0].position.lng(),
+          destination:markers[markers.length - 1].position.lat()+","+ markers[markers.length-1].position.lng(),
+          travelMode: google.maps.TravelMode.WALKING
+        }, function(response, status) {
+          // Route the directions and pass the response to a function to create
+          // markers for each step.
+          if (status === google.maps.DirectionsStatus.OK) {
+  
+            directionsDisplay.setDirections(response);
+   
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
       }
     </script>
     <script async defer
