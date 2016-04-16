@@ -275,7 +275,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     {
         // If an existing pin view was not available, create one.
         pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"CustomPinAnnotationView"];
-        pinView.animatesDrop = YES;
+//        pinView.animatesDrop = YES;
         pinView.canShowCallout = NO;
 //        pinView.image = [UIImage imageNamed:@"pizza_slice_32.png"];
 //        pinView.calloutOffset = CGPointMake(0, 32);
@@ -296,7 +296,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 - (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id <MKOverlay>)overlay
 {
     MKPolylineRenderer* lineView = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
-    lineView.strokeColor = [UIColor colorWithRed:70./255 green:171./255 blue:183./255 alpha:1.];
+    lineView.strokeColor = [UIColor orangeColor];
     lineView.lineWidth = 7;
     return lineView;
 }
