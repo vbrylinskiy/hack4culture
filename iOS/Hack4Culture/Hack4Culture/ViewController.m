@@ -103,6 +103,8 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:uiBusy];
     
+    self.resultIsShown = YES;
+    
     [self.importer importEventsForPolyline:self.polyline withBlock:^(NSSet *events, NSError *error) {
         
         if (!error && [events count] > 0) {
@@ -124,7 +126,6 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
             self.navigationItem.rightBarButtonItem = self.doneButton;
         }
         
-        self.resultIsShown = YES;
         [self updateBarButtons];
     }];
 }
