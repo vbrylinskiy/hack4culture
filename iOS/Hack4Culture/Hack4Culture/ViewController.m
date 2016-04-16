@@ -94,20 +94,22 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     
     [self.importer importEventsForPolyline:self.polyline withBlock:^(NSSet *events, NSError *error) {
         
-        self.allEvents = [NSMutableSet setWithSet:events];
-        NSArray *cleanEvents = [self cleanEvents:events];
-        
-        for (Event *event in cleanEvents) {
-            EventAnnotation *ann = [[EventAnnotation alloc] init];
-            ann.event = event;
-            ann.coordinate = CLLocationCoordinate2DMake([event.location[@"lattiude"] floatValue], [event.location[@"longitude"] floatValue]);
-            [self.eventAnnotations addObject:ann];
+        if (!error && [events count] > 0) {
+            self.allEvents = [NSMutableSet setWithSet:events];
+            NSArray *cleanEvents = [self cleanEvents:events];
+            
+            for (Event *event in cleanEvents) {
+                EventAnnotation *ann = [[EventAnnotation alloc] init];
+                ann.event = event;
+                ann.coordinate = CLLocationCoordinate2DMake([event.location[@"lattiude"] floatValue], [event.location[@"longitude"] floatValue]);
+                [self.eventAnnotations addObject:ann];
+            }
+            
+            [self.mapView addAnnotations:self.eventAnnotations];
+            
+            self.navigationItem.rightBarButtonItem = self.doneButton;
+            [self updateBarButtons];
         }
-        
-        [self.mapView addAnnotations:self.eventAnnotations];
-        
-        self.navigationItem.rightBarButtonItem = self.doneButton;
-        [self updateBarButtons];
     }];
 }
 

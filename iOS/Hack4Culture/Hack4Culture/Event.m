@@ -31,7 +31,9 @@
              @"priceMax":@"priceMax",
              @"ticketing":@"ticketing",
              @"urbancardPremium":@"urbancardPremium",
-             @"priority":@"priority"
+             @"priority":@"priority",
+             @"startDate" : @"startDate",
+             @"endDate" : @"endDate",
              };
 }
 
@@ -42,5 +44,16 @@
         return [super isEqual:object];
     }
 }
+
+- (NSString *)transformedStartDate {
+    return [NSString stringWithFormat:@"%@ %@", [self.startDate componentsSeparatedByString:@"T"][0], [self.startDate componentsSeparatedByString:@"T"][1]];
+    
+}
+
+- (NSString *)transformedEndDate {
+    return [NSString stringWithFormat:@"%@ %@", [self.endDate componentsSeparatedByString:@"T"][0], [self.startDate componentsSeparatedByString:@"T"][1]];
+    
+}
+
 
 @end

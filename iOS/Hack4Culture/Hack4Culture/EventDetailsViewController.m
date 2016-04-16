@@ -13,6 +13,8 @@
 
 @property (nonatomic, weak) IBOutlet UIImageView *imageView;
 @property (nonatomic, weak) IBOutlet UILabel *titleLabel;
+@property (nonatomic, weak) IBOutlet UILabel *dateLabel;
+@property (nonatomic, weak) IBOutlet UILabel *endDateLabel;
 @property (nonatomic, weak) IBOutlet UITextView *descriptionTextView;
 
 @end
@@ -37,6 +39,8 @@
 
     self.descriptionTextView.editable = NO;
     self.descriptionTextView.dataDetectorTypes = UIDataDetectorTypeAll;
+    self.dateLabel.text = [NSString stringWithFormat:@"From %@", [self.event transformedStartDate]];
+    self.endDateLabel.text = [NSString stringWithFormat:@"To %@", [self.event transformedEndDate]];
 
     [self.imageView setImageWithURL:[NSURL URLWithString:self.event.offer[@"mainImage"][@"tile"]]];
 }
