@@ -27,6 +27,7 @@
 		EB4453931CC14D970018DCD9 /* EventImporterImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453921CC14D970018DCD9 /* EventImporterImpl.m */; };
 		EB4453961CC169CC0018DCD9 /* CustomMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453951CC169CC0018DCD9 /* CustomMapView.m */; };
 		EB4453991CC194250018DCD9 /* EventAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453981CC194250018DCD9 /* EventAnnotation.m */; };
+		EB44539C1CC19C960018DCD9 /* EventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB44539B1CC19C960018DCD9 /* EventDetailsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,8 @@
 		EB4453951CC169CC0018DCD9 /* CustomMapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomMapView.m; sourceTree = "<group>"; };
 		EB4453971CC194250018DCD9 /* EventAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventAnnotation.h; sourceTree = "<group>"; };
 		EB4453981CC194250018DCD9 /* EventAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAnnotation.m; sourceTree = "<group>"; };
+		EB44539A1CC19C960018DCD9 /* EventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventDetailsViewController.h; sourceTree = "<group>"; };
+		EB44539B1CC19C960018DCD9 /* EventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventDetailsViewController.m; sourceTree = "<group>"; };
 		F4EB003E56D92DB90EA6BF60 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -156,6 +159,8 @@
 				C2F8C6901CC1AF470019E911 /* CategoryViewController.m */,
 				C2F8C6921CC1B1AA0019E911 /* CategoryCell.h */,
 				C2F8C6931CC1B1AA0019E911 /* CategoryCell.m */,
+				EB44539A1CC19C960018DCD9 /* EventDetailsViewController.h */,
+				EB44539B1CC19C960018DCD9 /* EventDetailsViewController.m */,
 			);
 			path = Hack4Culture;
 			sourceTree = "<group>";
@@ -311,6 +316,7 @@
 				EB4453761CC148850018DCD9 /* main.m in Sources */,
 				EB4453991CC194250018DCD9 /* EventAnnotation.m in Sources */,
 				C2F8C68E1CC1A0B80019E911 /* DatePickerViewController.m in Sources */,
+				EB44539C1CC19C960018DCD9 /* EventDetailsViewController.m in Sources */,
 				C2F8C67E1CC157220019E911 /* PlaceList.m in Sources */,
 				C2F8C6781CC14F0F0019E911 /* RequestHelper.m in Sources */,
 			);

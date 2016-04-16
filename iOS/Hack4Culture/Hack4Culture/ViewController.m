@@ -12,18 +12,19 @@
 #import "EventImporterImpl.h"
 #import "EventAnnotation.h"
 #import "Event.h"
+#import "EventDetailsViewController.h"
 
 typedef NS_ENUM(NSUInteger, ConnectionType) {
     ConnectionTypeDirect,
     ConnectionTypeRoute
 };
 
-@interface ViewController () <MKMapViewDelegate>
+@interface ViewController () <MKMapViewDelegate, EventDetailsDelegate>
 
 @property (nonatomic, weak) IBOutlet CustomMapView *mapView;
 @property (nonatomic, strong) NSMutableArray *annotations;
 @property (nonatomic, strong) NSMutableArray *eventAnnotations;
-@property (nonatomic, weak) IBOutlet UIBarButtonItem *doneButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *doneButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *clearButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *undoButton;
 @property (nonatomic, strong) MKPolyline *polyline;
@@ -68,14 +69,26 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 //    }
     [self.mapView removeAnnotations:self.eventAnnotations];
     [self.eventAnnotations removeAllObjects];
+    
+    UIActivityIndicatorView *uiBusy = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    uiBusy.hidesWhenStopped = YES;
+    [uiBusy startAnimating];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:uiBusy];
+
+    
     [self.importer importEventsForPolyline:self.polyline withBlock:^(NSSet *events, NSError *error) {
         for (Event *event in events) {
             EventAnnotation *ann = [[EventAnnotation alloc] init];
+            ann.event = event;
             ann.coordinate = CLLocationCoordinate2DMake([event.location[@"lattiude"] floatValue], [event.location[@"longitude"] floatValue]);
             [self.eventAnnotations addObject:ann];
         }
         
         [self.mapView addAnnotations:self.eventAnnotations];
+        
+        self.navigationItem.rightBarButtonItem = self.doneButton;
+        [self updateBarButtons];
     }];
 }
 
@@ -289,7 +302,15 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 }
 
 -(void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
-    NSLog(@"here");
+    if ([view.annotation isKindOfClass:[EventAnnotation class]]) {
+        EventDetailsViewController *popoverController = [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailsViewController"];
+        popoverController.preferredContentSize = CGSizeMake(300.0, 500.0);
+        popoverController.delegate = self;
+        popoverController.modalPresentationStyle = UIModalPresentationPopover;
+        popoverController.event = [(EventAnnotation *)view.annotation event];
+        popoverController.presentingController = self;
+        [popoverController presentPopoverPresentationControllerWithSourceView:self.mapView sourceRect:view.frame];
+    }
 }
 
 - (IBAction)changeType:(UISegmentedControl *)sender {
@@ -298,6 +319,10 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     } else {
         self.mapView.mapType = MKMapTypeSatellite;
     }
+}
+
+-(void)didDismissPopover {
+    [self.mapView deselectAnnotation:[self.mapView.selectedAnnotations firstObject] animated:NO];
 }
 
 @end
