@@ -35,6 +35,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 @property (nonatomic, strong) dispatch_queue_t queue;
 @property (nonatomic, strong) EventImporterImpl *importer;
 @property (nonatomic, strong) NSMutableSet *allEvents;
+@property (nonatomic, assign) BOOL resultIsShown;
 
 @end
 
@@ -81,6 +82,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 //    for (int i = 0; i < self.polyline.pointCount; i++) {
 //        NSLog(@"%@", MKStringFromMapPoint(self.polyline.points[i]));
 //    }
+    
     [self.mapView removeAnnotations:self.eventAnnotations];
     [self.eventAnnotations removeAllObjects];
     [self.allEvents removeAllObjects];
@@ -90,7 +92,6 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     [uiBusy startAnimating];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:uiBusy];
-
     
     [self.importer importEventsForPolyline:self.polyline withBlock:^(NSSet *events, NSError *error) {
         
@@ -108,8 +109,10 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
             [self.mapView addAnnotations:self.eventAnnotations];
             
             self.navigationItem.rightBarButtonItem = self.doneButton;
-            [self updateBarButtons];
         }
+        
+        self.resultIsShown = YES;
+        [self updateBarButtons];
     }];
 }
 
@@ -151,6 +154,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 }
 
 - (IBAction)clear:(id)sender {
+    self.resultIsShown = NO;
     [self.annotations removeAllObjects];
     [self.previousPolylines removeAllObjects];
     self.polyline = nil;
@@ -172,7 +176,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 }
 
 - (void)updateBarButtons {
-    if (self.annotations.count > 1) {
+    if (self.annotations.count > 1 && !self.resultIsShown) {
         self.doneButton.enabled = YES;
         self.undoButton.enabled = YES;
     } else {
@@ -201,6 +205,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 
 - (void)mapViewTap:(NSNotification*)notif {
     
+    
     CGPoint point = [self.mapView.tapGesture locationInView:self.mapView];
     CLLocationCoordinate2D coord = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
     
@@ -210,6 +215,9 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         [self.mapView selectAnnotation:[v annotation] animated:YES];
         return;
     }
+    
+    if (self.resultIsShown)
+        return;
     
     CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
     
@@ -313,6 +321,9 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         [self.mapView selectAnnotation:[v annotation] animated:YES];
         return;
     }
+    
+    if (self.resultIsShown)
+        return;
 
     MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
     pointAnnotation.coordinate = coord;
