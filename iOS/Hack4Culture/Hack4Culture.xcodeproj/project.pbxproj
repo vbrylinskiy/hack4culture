@@ -32,6 +32,8 @@
 		EB4453A01CC1C9FB0018DCD9 /* bikes-light.json in Resources */ = {isa = PBXBuildFile; fileRef = EB44539F1CC1C9FB0018DCD9 /* bikes-light.json */; };
 		EB4453A31CC1CA480018DCD9 /* BikesImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453A21CC1CA480018DCD9 /* BikesImporter.m */; };
 		EB4453A71CC1D0C00018DCD9 /* bike.png in Resources */ = {isa = PBXBuildFile; fileRef = EB4453A61CC1D0C00018DCD9 /* bike.png */; };
+		EB4453AA1CC1E2FB0018DCD9 /* GroupedEventAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453A91CC1E2FB0018DCD9 /* GroupedEventAnnotation.m */; };
+		EB4453AD1CC1EE200018DCD9 /* EventListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453AC1CC1EE200018DCD9 /* EventListViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +82,10 @@
 		EB4453A11CC1CA480018DCD9 /* BikesImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BikesImporter.h; sourceTree = "<group>"; };
 		EB4453A21CC1CA480018DCD9 /* BikesImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BikesImporter.m; sourceTree = "<group>"; };
 		EB4453A61CC1D0C00018DCD9 /* bike.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bike.png; sourceTree = "<group>"; };
+		EB4453A81CC1E2FA0018DCD9 /* GroupedEventAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupedEventAnnotation.h; sourceTree = "<group>"; };
+		EB4453A91CC1E2FB0018DCD9 /* GroupedEventAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupedEventAnnotation.m; sourceTree = "<group>"; };
+		EB4453AB1CC1EE200018DCD9 /* EventListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventListViewController.h; sourceTree = "<group>"; };
+		EB4453AC1CC1EE200018DCD9 /* EventListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventListViewController.m; sourceTree = "<group>"; };
 		F4EB003E56D92DB90EA6BF60 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -176,6 +182,10 @@
 				EB44539B1CC19C960018DCD9 /* EventDetailsViewController.m */,
 				EB4453A11CC1CA480018DCD9 /* BikesImporter.h */,
 				EB4453A21CC1CA480018DCD9 /* BikesImporter.m */,
+				EB4453A81CC1E2FA0018DCD9 /* GroupedEventAnnotation.h */,
+				EB4453A91CC1E2FB0018DCD9 /* GroupedEventAnnotation.m */,
+				EB4453AB1CC1EE200018DCD9 /* EventListViewController.h */,
+				EB4453AC1CC1EE200018DCD9 /* EventListViewController.m */,
 			);
 			path = Hack4Culture;
 			sourceTree = "<group>";
@@ -321,6 +331,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB4453AA1CC1E2FB0018DCD9 /* GroupedEventAnnotation.m in Sources */,
 				EB4453961CC169CC0018DCD9 /* CustomMapView.m in Sources */,
 				C2F8C6941CC1B1AA0019E911 /* CategoryCell.m in Sources */,
 				EB4453931CC14D970018DCD9 /* EventImporterImpl.m in Sources */,
@@ -331,6 +342,7 @@
 				C2F8C6851CC1767B0019E911 /* Event.m in Sources */,
 				C2F8C67B1CC156F20019E911 /* Place.m in Sources */,
 				EB4453A31CC1CA480018DCD9 /* BikesImporter.m in Sources */,
+				EB4453AD1CC1EE200018DCD9 /* EventListViewController.m in Sources */,
 				C2F8C6821CC176480019E911 /* EventList.m in Sources */,
 				EB4453761CC148850018DCD9 /* main.m in Sources */,
 				EB4453991CC194250018DCD9 /* EventAnnotation.m in Sources */,

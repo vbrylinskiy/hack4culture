@@ -15,17 +15,24 @@
 #import "EventDetailsViewController.h"
 #import "RequestHelper.h"
 #import "BikesImporter.h"
+#import "GroupedEventAnnotation.h"
+#import "EventListViewController.h"
+
+#define CLCOORDINATE_EPSILON 0.0000000005f
+#define CLCOORDINATES_EQUAL2( coord1, coord2 ) (fabs(coord1.latitude - coord2.latitude) < CLCOORDINATE_EPSILON && fabs(coord1.longitude - coord2.longitude) < CLCOORDINATE_EPSILON)
+
 
 typedef NS_ENUM(NSUInteger, ConnectionType) {
     ConnectionTypeDirect,
     ConnectionTypeRoute
 };
 
-@interface ViewController () <MKMapViewDelegate, EventDetailsDelegate>
+@interface ViewController () <MKMapViewDelegate, EventDetailsDelegate, EventListViewDelegate>
 
 @property (nonatomic, weak) IBOutlet CustomMapView *mapView;
-@property (nonatomic, strong) NSMutableArray *annotations;
+@property (nonatomic, strong) NSMutableArray <id <MKAnnotation>> *annotations;
 @property (nonatomic, strong) NSMutableArray *eventAnnotations;
+@property (nonatomic, strong) NSMutableArray *groupedEventAnnotations;
 @property (nonatomic, strong) NSArray *bikeAnnotations;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *doneButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *clearButton;
@@ -59,6 +66,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     self.annotations = [NSMutableArray array];
     self.previousPolylines = [NSMutableArray array];
     self.eventAnnotations = [NSMutableArray array];
+    self.groupedEventAnnotations = [NSMutableArray array];
     self.allEvents = [NSMutableSet set];
     self.doneButton.enabled = NO;
     self.clearButton.enabled = NO;
@@ -84,7 +92,9 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 //    }
     
     [self.mapView removeAnnotations:self.eventAnnotations];
+    [self.mapView removeAnnotations:self.groupedEventAnnotations];
     [self.eventAnnotations removeAllObjects];
+    [self.groupedEventAnnotations removeAllObjects];
     [self.allEvents removeAllObjects];
     
     UIActivityIndicatorView *uiBusy = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -106,7 +116,10 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
                 [self.eventAnnotations addObject:ann];
             }
             
+            [self groupEvents];
+            
             [self.mapView addAnnotations:self.eventAnnotations];
+            [self.mapView addAnnotations:self.groupedEventAnnotations];
             
             self.navigationItem.rightBarButtonItem = self.doneButton;
         }
@@ -376,6 +389,8 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         
         if ([annotation isKindOfClass:[EventAnnotation class]]) {
             pinView.pinTintColor = [UIColor colorWithRed:70./255 green:171./255 blue:183./255 alpha:1.];
+        } else if ([annotation isKindOfClass:[GroupedEventAnnotation class]]) {
+            pinView.pinTintColor = [UIColor redColor];
         } else {
             pinView.pinTintColor = [UIColor orangeColor];
         }
@@ -402,6 +417,14 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         popoverController.event = [(EventAnnotation *)view.annotation event];
         popoverController.presentingController = self;
         [popoverController presentPopoverPresentationControllerWithSourceView:self.mapView sourceRect:view.frame];
+    } else if ([view.annotation isKindOfClass:[GroupedEventAnnotation class]]) {
+        EventListViewController *popoverController = [self.storyboard instantiateViewControllerWithIdentifier:@"EventListViewController"];
+        popoverController.preferredContentSize = CGSizeMake(300.0, 500.0);
+        popoverController.delegate = self;
+        popoverController.modalPresentationStyle = UIModalPresentationPopover;
+        popoverController.events = [(GroupedEventAnnotation *)view.annotation events];
+        popoverController.presentingController = self;
+        [popoverController presentPopoverPresentationControllerWithSourceView:self.mapView sourceRect:view.frame];
     }
 }
 
@@ -420,7 +443,10 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 - (IBAction)sliderDidChange:(id)sender {
     
     [self.mapView removeAnnotations:self.eventAnnotations];
+    [self.mapView removeAnnotations:self.groupedEventAnnotations];
+    
     [self.eventAnnotations removeAllObjects];
+    [self.groupedEventAnnotations removeAllObjects];
     
     NSArray *cleanEvents = [self cleanEvents:self.allEvents];
         
@@ -430,16 +456,21 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         ann.coordinate = CLLocationCoordinate2DMake([event.location[@"lattiude"] floatValue], [event.location[@"longitude"] floatValue]);
         [self.eventAnnotations addObject:ann];
     }
+    
+    [self groupEvents];
 
     [self.mapView addAnnotations:self.eventAnnotations];
-    
+    [self.mapView addAnnotations:self.groupedEventAnnotations];
 }
 
 -(void) categoriesDidChange {
     
     [self.mapView removeAnnotations:self.eventAnnotations];
-    [self.eventAnnotations removeAllObjects];
+    [self.mapView removeAnnotations:self.groupedEventAnnotations];
     
+    [self.eventAnnotations removeAllObjects];
+    [self.groupedEventAnnotations removeAllObjects];
+
     NSArray *cleanEvents = [self cleanEvents:self.allEvents];
     
     for (Event *event in cleanEvents) {
@@ -449,7 +480,49 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         [self.eventAnnotations addObject:ann];
     }
     
+    [self groupEvents];
+
+    
     [self.mapView addAnnotations:self.eventAnnotations];
+    [self.mapView addAnnotations:self.groupedEventAnnotations];
+}
+
+- (void)groupEvents {
+    NSMutableArray *alreadyInGroup = [NSMutableArray array];
+    for (int i = 0; i < self.eventAnnotations.count; ++i) {
+        
+        id <MKAnnotation> ann = self.eventAnnotations[i];
+        
+        if ([alreadyInGroup containsObject:ann])
+            continue;
+        
+        NSMutableArray *group = [NSMutableArray array];
+        for (int j = i + 1; j < self.eventAnnotations.count; j++) {
+            id <MKAnnotation> ann2 = self.eventAnnotations[j];
+
+            if ([alreadyInGroup containsObject:ann2]) {
+                continue;
+            } else {
+                NSLog(@"%f %f \n %f %f", [ann coordinate].latitude, [ann coordinate].longitude, [ann2 coordinate].latitude, [ann2 coordinate].longitude);
+                if (CLCOORDINATES_EQUAL2([ann coordinate], [ann2 coordinate])) {
+                    [group addObject:ann2];
+                    [alreadyInGroup addObject:ann2];
+                }
+            }
+        }
+        
+        if (group.count > 0) {
+            [alreadyInGroup addObject:ann];
+            [group addObject:ann];
+            GroupedEventAnnotation *groupAnn = [[GroupedEventAnnotation alloc] init];
+            groupAnn.coordinate = ann.coordinate;
+            groupAnn.events = [group valueForKey:@"event"];
+            [self.groupedEventAnnotations addObject:groupAnn];
+        }
+    }
+    
+    [self.eventAnnotations removeObjectsInArray:alreadyInGroup];
+    
 }
 
 
