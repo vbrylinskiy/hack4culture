@@ -38,7 +38,7 @@
     self.descriptionTextView.editable = NO;
     self.descriptionTextView.dataDetectorTypes = UIDataDetectorTypeAll;
 
-    [self.imageView setImageWithURL:[NSURL URLWithString:self.event.offer[@"mainImage"][@"thumbnail"]]];
+    [self.imageView setImageWithURL:[NSURL URLWithString:self.event.offer[@"mainImage"][@"tile"]]];
 }
 
 - (void)presentPopoverPresentationControllerWithSourceView:(UIView *)sourceView sourceRect:(CGRect)sourceRect {
