@@ -28,7 +28,7 @@
         CLLocation *start = [[CLLocation alloc] initWithLatitude:routeCoordinates[c].latitude longitude:routeCoordinates[c].longitude];
         CLLocation *end = [[CLLocation alloc] initWithLatitude:routeCoordinates[lastC].latitude longitude:routeCoordinates[lastC].longitude];
         
-        if (c>0 && [start distanceFromLocation:end] < 100) {
+        if (c>0 && [start distanceFromLocation:end] < 200) {
             continue;
         }
         lastC = c;
