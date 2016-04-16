@@ -31,6 +31,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 @property (nonatomic, strong) NSMutableArray *previousPolylines;
 @property (nonatomic, strong) dispatch_queue_t queue;
 @property (nonatomic, strong) EventImporterImpl *importer;
+@property (nonatomic, strong) NSMutableSet *allEvents;
 
 @end
 
@@ -52,6 +53,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     self.annotations = [NSMutableArray array];
     self.previousPolylines = [NSMutableArray array];
     self.eventAnnotations = [NSMutableArray array];
+    self.allEvents = [NSMutableSet set];
     self.doneButton.enabled = NO;
     self.clearButton.enabled = NO;
     self.undoButton.enabled = NO;
@@ -69,6 +71,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 //    }
     [self.mapView removeAnnotations:self.eventAnnotations];
     [self.eventAnnotations removeAllObjects];
+    [self.allEvents removeAllObjects];
     
     UIActivityIndicatorView *uiBusy = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     uiBusy.hidesWhenStopped = YES;
@@ -78,7 +81,11 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 
     
     [self.importer importEventsForPolyline:self.polyline withBlock:^(NSSet *events, NSError *error) {
-        for (Event *event in events) {
+        
+        self.allEvents = [NSMutableSet setWithSet:events];
+        NSArray *cleanEvents = [self cleanEvents:events];
+        
+        for (Event *event in cleanEvents) {
             EventAnnotation *ann = [[EventAnnotation alloc] init];
             ann.event = event;
             ann.coordinate = CLLocationCoordinate2DMake([event.location[@"lattiude"] floatValue], [event.location[@"longitude"] floatValue]);
@@ -90,6 +97,34 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         self.navigationItem.rightBarButtonItem = self.doneButton;
         [self updateBarButtons];
     }];
+}
+
+-(NSArray*) cleanEvents:(NSSet*) events {
+    
+    NSMutableArray *array = [NSMutableArray array];
+    
+    NSUInteger count = self.polyline.pointCount;
+    CLLocationCoordinate2D *routeCoordinates = malloc(count * sizeof(CLLocationCoordinate2D));
+    [self.polyline getCoordinates:routeCoordinates range:NSMakeRange(0, count)];
+    
+    for (Event* event in events) {
+        BOOL closeEnough = NO;
+        for (int i = 0; i< count; i++) {
+            CLLocation* routeLocation = [[CLLocation alloc] initWithLatitude:routeCoordinates[i].latitude longitude:routeCoordinates[i].longitude];
+            CLLocation* eventLocation = [[CLLocation alloc] initWithLatitude:[event.location[@"lattiude"] floatValue] longitude:[event.location[@"longitude"] floatValue]];
+            if ([routeLocation distanceFromLocation:eventLocation] < self.slider.value) {
+                closeEnough = YES;
+                break;
+            }
+        }
+        if (closeEnough) {
+            [array addObject:event];
+        }
+    }
+    
+    free(routeCoordinates);
+             
+    return array;
 }
 
 - (IBAction)clear:(id)sender {
@@ -254,11 +289,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         [self.mapView selectAnnotation:[v annotation] animated:YES];
         return;
     }
-    
-//    CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
-//    [self.annotations addObject:location];
-    
-    
+
     MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
     pointAnnotation.coordinate = coord;
     
@@ -325,4 +356,20 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     [self.mapView deselectAnnotation:[self.mapView.selectedAnnotations firstObject] animated:NO];
 }
 
+- (IBAction)sliderDidChange:(id)sender {
+    
+    [self.mapView removeAnnotations:self.eventAnnotations];
+    [self.eventAnnotations removeAllObjects];
+    
+    NSArray *cleanEvents = [self cleanEvents:self.allEvents];
+        
+    for (Event *event in cleanEvents) {
+        EventAnnotation *ann = [[EventAnnotation alloc] init];
+        ann.event = event;
+        ann.coordinate = CLLocationCoordinate2DMake([event.location[@"lattiude"] floatValue], [event.location[@"longitude"] floatValue]);
+        [self.eventAnnotations addObject:ann];
+    }
+
+    [self.mapView addAnnotations:self.eventAnnotations];
+}
 @end

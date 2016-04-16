@@ -10,6 +10,8 @@
 
 @interface ViewController : UIViewController <UIPopoverPresentationControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UISlider *slider;
+- (IBAction)sliderDidChange:(id)sender;
 
 @end
 

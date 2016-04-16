@@ -40,6 +40,17 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="I9e-f1-50H"/>
+                                    <barButtonItem style="plain" id="ZFw-1n-F9N">
+                                        <slider key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="200" minValue="30" maxValue="1000" id="RzN-4F-GlG">
+                                            <rect key="frame" x="241" y="7" width="118" height="31"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="minimumTrackTintColor" red="0.27450980390000002" green="0.6705882353" blue="0.71764705880000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="sliderDidChange:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XLT-z0-aMl"/>
+                                            </connections>
+                                        </slider>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="8Z9-4j-doC"/>
                                     <barButtonItem title="Max Date" id="kbM-pV-mGN">
                                         <color key="tintColor" red="0.27521073190000001" green="0.66866262340000004" blue="0.71903268909999996" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
@@ -113,6 +124,7 @@
                         <outlet property="clearButton" destination="Vjh-6t-WZ7" id="DV7-Lu-3Mh"/>
                         <outlet property="doneButton" destination="fUO-0a-WDr" id="3aY-Ju-tkw"/>
                         <outlet property="mapView" destination="KGI-M8-uzm" id="1Zw-Xm-qpc"/>
+                        <outlet property="slider" destination="RzN-4F-GlG" id="maK-VC-xj7"/>
                         <outlet property="undoButton" destination="SXy-4Y-Esc" id="fps-bC-Xs0"/>
                     </connections>
                 </viewController>

@@ -80,10 +80,8 @@ static NSMutableArray* categorieFilters;
 }
 
 +(NSDictionary*) categories {
-    // shoud request http://go.wroclaw.pl/api/v1.0/categories/for-places?key=928012495102009594014322187345717861707, but...
-    
-    return @{@"Culture":@10,@"Others":@12,@"Outdoors":@243,@"European Capital of Culture":@244,
-             @"Pets Welcome":@245,@"24/7":@246,@"Seasons":@247,@"For Seniors":@248,
-             @"Highlights":@249,@"Green Areas":@250,@"For Parents":@251,@"For Handicapped":@242};
+    return @{@"Cinema":@1,@"Theatre":@2,@"Art":@3,@"Music":@5,
+             @"Literature":@7,@"Culture":@10,@"Others":@12,@"Food":@14,@"Attractions":@15,
+             @"Sports":@16,@"Education":@19};
 }
 @end
