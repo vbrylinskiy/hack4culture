@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
@@ -246,10 +245,10 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eb3-Ov-zdD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="985" y="849"/>
+        </scene>
         <!--Root View Controller-->
         <scene sceneID="Jox-Ic-W65">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Wug-EC-iwH" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController storyboardIdentifier="EventDetailsViewController" id="Az8-0E-Sfk" customClass="EventDetailsViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="l19-mb-NEr">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
@@ -363,6 +362,7 @@
                         <outlet property="titleLabel" destination="6AJ-yM-BwN" id="C3k-q2-S5F"/>
                     </connections>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wug-EC-iwH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="376" y="1140"/>
         </scene>
