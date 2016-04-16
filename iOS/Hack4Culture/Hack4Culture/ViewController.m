@@ -13,6 +13,7 @@
 #import "EventAnnotation.h"
 #import "Event.h"
 #import "EventDetailsViewController.h"
+#import "RequestHelper.h"
 
 typedef NS_ENUM(NSUInteger, ConnectionType) {
     ConnectionTypeDirect,
@@ -118,6 +119,11 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
             }
         }
         if (closeEnough) {
+//            BOOL isEventFiltered = NO;
+//            for (NSString *key in [RequestHelper categorieFilters]) {
+//                if (event.offer.)
+//            }
+            
             [array addObject:event];
         }
     }

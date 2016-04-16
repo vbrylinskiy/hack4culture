@@ -42,7 +42,7 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="I9e-f1-50H"/>
                                     <barButtonItem style="plain" id="ZFw-1n-F9N">
                                         <slider key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="200" minValue="30" maxValue="1000" id="RzN-4F-GlG">
-                                            <rect key="frame" x="241" y="7" width="118" height="31"/>
+                                            <rect key="frame" x="200" y="7" width="200" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="minimumTrackTintColor" red="0.27450980390000002" green="0.6705882353" blue="0.71764705880000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
