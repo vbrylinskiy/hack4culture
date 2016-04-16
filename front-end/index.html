@@ -5,7 +5,10 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> 
+    
+   
     <meta charset="utf-8">
     <style>
       html, body {
@@ -30,6 +33,10 @@
       .alert{
         width: 300px;
         left: calc(50% - 150px);
+      }
+      .alert-danger {
+        width: 450px;
+        left:calc(50% - 225px);
       }
       #endRoute, #saveRoute, #loadRoute {
         display: none;
@@ -78,11 +85,17 @@
         top:4px;
         left: 10px;
       }
+
     </style>
   </head>
   <body>
-  <div class="alert alert-danger msg">Kliknij by dodać punkty wycieczki. <br/> (W razie pomyłki możesz kliknąć na marker żeby go usunąć).</div>
+  <div class="alert alert-danger msg"><span>Kliknij by dodać punkty wycieczki. <br/> (W razie pomyłki możesz kliknąć na marker żeby go usunąć).</span><br/><br/>
+  Data początkowa <input id="date-from" class="form-control" type="date" value="2016-04-16"> 
+  Data końcowa <input id="date-to" class="form-control" type="date" value="2016-04-17">
+  </div>
   <div class="alert alert-info msg legend"><img src = "bike.png"><span>Stacje rowerowe</span><br/><img src="location.svg" width="32" style><span>Wydarzenia kulturalne</span></div>
+    
+
   <button class="btn btn-primary btn-lg msg" id="endRoute">Skończone?</button> 
   <button class="btn btn-primary btn-lg msg" id="saveRoute" data-toggle="modal" data-target="#saveRouteModal">Zapisz trasę</button> 
   <button class="btn btn-primary btn-lg msg" id="loadRoute" data-toggle="modal" data-target="#loadRouteModal">Wczytaj trasę</button> 

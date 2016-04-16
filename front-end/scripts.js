@@ -10,6 +10,7 @@
     var events = [];
     var oms;
 
+    
     $('#saveForm').submit(function(e){
       
       e.preventDefault();
@@ -106,7 +107,7 @@
         markers.push(marker);
 
         map.panTo(latLng); 
-        if (markers.length === 1) $('.alert-danger').html('Dodaj przynajmniej jeszcze jeden!');
+        if (markers.length === 1) $('.alert-danger span').html('Dodaj przynajmniej jeszcze jeden!');
         if (markers.length > 1) {
             $('#endRoute').fadeIn();    
             $('.alert-danger').hide();
@@ -299,11 +300,18 @@
                               "thumb": event.offer.mainImage.thumbnail
                             });
                              
+                             var eventStartDate, eventEndDate;
+                             if ((event.startDate.slice(0,4) === "1970") || (event.endDate.slice(0,4) ===  "3015")) {
+                              eventStartDate = eventEndDate = "Wystawa stała";
+                             } else {
+                              eventStartDate = event.startDate.split("T").join(", ");
+                              eventEndDate = event.endDate.split("T").join(", ");
+                             }
 
                               placeEventMarker({
                                "lat": event.location.lattiude,
                                "lng": event.location.longitude
-                              }, event.offer.title, event.offer.longDescription, event.offer.mainImage.thumbnail, event.startDate.split("T").join(", "), event.endDate.split("T").join(", "), event.offer.pageLink);
+                              }, event.offer.title, event.offer.longDescription, event.offer.mainImage.thumbnail,eventStartDate ,eventEndDate , event.offer.pageLink);
 
                               $('#saveRoute').fadeIn();
                              
@@ -328,8 +336,8 @@
       }
 
       function getEventsForLocation(locationId) {
-        var timeFrom = +(new Date());
-        var timeTo = +(new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000));
+        var timeFrom = +(new Date($('#date-from').val()))
+        var timeTo = +(new Date($('#date-to').val()))
         
         var url = "http://go.wroclaw.pl/api/v1.0/events?place-id="+locationId+"&key=928012495102009594014322187345717861707&time-from="+timeFrom+"&time-to="+timeTo;
         
