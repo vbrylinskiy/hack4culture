@@ -39,7 +39,7 @@
 
 -(BOOL)isEqual:(id)object {
     if ([object isKindOfClass:Event.class]) {
-        return self.identifier == ((Event*)object).identifier;
+        return [self.identifier intValue] == [((Event*)object).identifier intValue];
     } else {
         return [super isEqual:object];
     }
