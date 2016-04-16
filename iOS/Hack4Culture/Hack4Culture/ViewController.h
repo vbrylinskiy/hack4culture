@@ -10,6 +10,8 @@
 
 @interface ViewController : UIViewController <UIPopoverPresentationControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *helpBox;
+@property (weak, nonatomic) IBOutlet UILabel *helpText;
 @property (weak, nonatomic) IBOutlet UISlider *slider;
 - (IBAction)sliderDidChange:(id)sender;
 

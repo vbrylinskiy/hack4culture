@@ -8,6 +8,7 @@
 
 #import "EventDetailsViewController.h"
 #import <UIImageView+AFNetworking.h>
+#import <EventKit/EventKit.h>
 
 @interface EventDetailsViewController () <UIPopoverPresentationControllerDelegate>
 
@@ -59,6 +60,24 @@
 
 - (IBAction)readMore:(id)sender {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.event.offer[@"pageLink"]]];
+}
+- (IBAction)addToCalendar:(id)sender {
+    EKEventStore *store = [EKEventStore new];
+    [store requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (!granted) { return; }
+        
+        EKEvent *event = [EKEvent eventWithEventStore:store];
+        event.title = self.event.offer[@"title"];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm"];
+        
+        event.startDate = [dateFormatter dateFromString:self.event.startDate];
+        event.endDate = [dateFormatter dateFromString:self.event.endDate];
+        event.calendar = [store defaultCalendarForNewEvents];
+        NSError *err = nil;
+        [store saveEvent:event span:EKSpanThisEvent commit:YES error:&err];
+    }];
 }
 
 #pragma mark - UIPopoverPresentationControllerDelegate

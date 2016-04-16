@@ -162,6 +162,10 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     [self.mapView removeOverlays:self.mapView.overlays];
     [self.mapView addAnnotations:self.bikeAnnotations];
     [self updateBarButtons];
+    
+    [UIView transitionWithView:self.helpBox duration:0.5 options:UIViewAnimationOptionTransitionCrossDissolve animations:^(void){
+        self.helpBox.hidden = NO;
+    } completion:nil];
 }
 
 - (IBAction)undo:(id)sender {
@@ -235,8 +239,12 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 }
 
 - (void)addRouteToLastPointWithType:(ConnectionType)type {
-    if (self.annotations.count < 2)
+    if (self.annotations.count < 2) {
         return;
+    }
+    [UIView transitionWithView:self.helpBox duration:0.5 options:UIViewAnimationOptionTransitionCrossDissolve animations:^(void){
+        self.helpBox.hidden = YES;
+    } completion:nil];
     
     dispatch_async(self.queue, ^{
         if (type == ConnectionTypeRoute) {
@@ -307,7 +315,9 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     
     free(coordinates);
     
-    [self.mapView addOverlay:self.polyline];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.mapView addOverlay:self.polyline];
+    });
 }
 
 - (void)mapViewLongTap:(NSNotification*)notif {
@@ -422,6 +432,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     }
 
     [self.mapView addAnnotations:self.eventAnnotations];
+    
 }
 
 -(void) categoriesDidChange {

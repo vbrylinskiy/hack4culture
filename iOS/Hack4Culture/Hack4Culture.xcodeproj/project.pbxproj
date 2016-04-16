@@ -17,6 +17,7 @@
 		C2F8C68E1CC1A0B80019E911 /* DatePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C68D1CC1A0B80019E911 /* DatePickerViewController.m */; };
 		C2F8C6911CC1AF470019E911 /* CategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6901CC1AF470019E911 /* CategoryViewController.m */; };
 		C2F8C6941CC1B1AA0019E911 /* CategoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6931CC1B1AA0019E911 /* CategoryCell.m */; };
+		C2F8C6961CC1E80F0019E911 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F8C6951CC1E80F0019E911 /* EventKit.framework */; };
 		EB4453761CC148850018DCD9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453751CC148850018DCD9 /* main.m */; };
 		EB4453791CC148850018DCD9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453781CC148850018DCD9 /* AppDelegate.m */; };
 		EB44537C1CC148850018DCD9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB44537B1CC148850018DCD9 /* ViewController.m */; };
@@ -54,6 +55,7 @@
 		C2F8C6901CC1AF470019E911 /* CategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryViewController.m; sourceTree = "<group>"; };
 		C2F8C6921CC1B1AA0019E911 /* CategoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCell.h; sourceTree = "<group>"; };
 		C2F8C6931CC1B1AA0019E911 /* CategoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCell.m; sourceTree = "<group>"; };
+		C2F8C6951CC1E80F0019E911 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		EB4453711CC148850018DCD9 /* Hack4Culture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hack4Culture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB4453751CC148850018DCD9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EB4453771CC148850018DCD9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2F8C6961CC1E80F0019E911 /* EventKit.framework in Frameworks */,
 				EB44538C1CC14B540018DCD9 /* MapKit.framework in Frameworks */,
 				3894A7B77E7292657F95FA8D /* libPods.a in Frameworks */,
 			);
@@ -114,6 +117,7 @@
 		C995A55D272595B5E838E058 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C2F8C6951CC1E80F0019E911 /* EventKit.framework */,
 				EB44538B1CC14B540018DCD9 /* MapKit.framework */,
 				3F6CDFFF9680284346E03161 /* libPods.a */,
 			);
