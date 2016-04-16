@@ -17,4 +17,12 @@
 
 - (void) fetchPlacesForLat:(CGFloat) lat lon:(CGFloat) lon withBlock:(void (^)(PlaceList* list))block;
 - (void) fetchEventsForPlaceId:(NSNumber*)placeId withBlock:(void (^)(EventList* list))block;
+
++(void)setMaxDate:(NSTimeInterval)maxDate;
++(NSTimeInterval)maxDate;
+
++(NSDictionary*) categories;
++(void) updateFilterAtIndex:(NSInteger)index withValue:(NSNumber*)boolean;
++(NSArray*) categorieFilters;
+
 @end

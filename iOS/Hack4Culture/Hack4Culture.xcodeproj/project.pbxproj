@@ -14,6 +14,9 @@
 		C2F8C6821CC176480019E911 /* EventList.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6811CC176480019E911 /* EventList.m */; };
 		C2F8C6851CC1767B0019E911 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6841CC1767B0019E911 /* Event.m */; };
 		C2F8C6881CC18C780019E911 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6871CC18C780019E911 /* Location.m */; };
+		C2F8C68E1CC1A0B80019E911 /* DatePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C68D1CC1A0B80019E911 /* DatePickerViewController.m */; };
+		C2F8C6911CC1AF470019E911 /* CategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6901CC1AF470019E911 /* CategoryViewController.m */; };
+		C2F8C6941CC1B1AA0019E911 /* CategoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C6931CC1B1AA0019E911 /* CategoryCell.m */; };
 		EB4453761CC148850018DCD9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453751CC148850018DCD9 /* main.m */; };
 		EB4453791CC148850018DCD9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453781CC148850018DCD9 /* AppDelegate.m */; };
 		EB44537C1CC148850018DCD9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB44537B1CC148850018DCD9 /* ViewController.m */; };
@@ -41,6 +44,12 @@
 		C2F8C6841CC1767B0019E911 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		C2F8C6861CC18C780019E911 /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
 		C2F8C6871CC18C780019E911 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
+		C2F8C68C1CC1A0B80019E911 /* DatePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatePickerViewController.h; sourceTree = "<group>"; };
+		C2F8C68D1CC1A0B80019E911 /* DatePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatePickerViewController.m; sourceTree = "<group>"; };
+		C2F8C68F1CC1AF470019E911 /* CategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryViewController.h; sourceTree = "<group>"; };
+		C2F8C6901CC1AF470019E911 /* CategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryViewController.m; sourceTree = "<group>"; };
+		C2F8C6921CC1B1AA0019E911 /* CategoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCell.h; sourceTree = "<group>"; };
+		C2F8C6931CC1B1AA0019E911 /* CategoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCell.m; sourceTree = "<group>"; };
 		EB4453711CC148850018DCD9 /* Hack4Culture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hack4Culture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB4453751CC148850018DCD9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EB4453771CC148850018DCD9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -141,6 +150,12 @@
 				EB4453951CC169CC0018DCD9 /* CustomMapView.m */,
 				EB4453971CC194250018DCD9 /* EventAnnotation.h */,
 				EB4453981CC194250018DCD9 /* EventAnnotation.m */,
+				C2F8C68C1CC1A0B80019E911 /* DatePickerViewController.h */,
+				C2F8C68D1CC1A0B80019E911 /* DatePickerViewController.m */,
+				C2F8C68F1CC1AF470019E911 /* CategoryViewController.h */,
+				C2F8C6901CC1AF470019E911 /* CategoryViewController.m */,
+				C2F8C6921CC1B1AA0019E911 /* CategoryCell.h */,
+				C2F8C6931CC1B1AA0019E911 /* CategoryCell.m */,
 			);
 			path = Hack4Culture;
 			sourceTree = "<group>";
@@ -284,15 +299,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB4453961CC169CC0018DCD9 /* CustomMapView.m in Sources */,
+				C2F8C6941CC1B1AA0019E911 /* CategoryCell.m in Sources */,
 				EB4453931CC14D970018DCD9 /* EventImporterImpl.m in Sources */,
 				EB44537C1CC148850018DCD9 /* ViewController.m in Sources */,
 				EB4453791CC148850018DCD9 /* AppDelegate.m in Sources */,
+				C2F8C6911CC1AF470019E911 /* CategoryViewController.m in Sources */,
 				C2F8C6881CC18C780019E911 /* Location.m in Sources */,
 				C2F8C6851CC1767B0019E911 /* Event.m in Sources */,
 				C2F8C67B1CC156F20019E911 /* Place.m in Sources */,
 				C2F8C6821CC176480019E911 /* EventList.m in Sources */,
 				EB4453761CC148850018DCD9 /* main.m in Sources */,
 				EB4453991CC194250018DCD9 /* EventAnnotation.m in Sources */,
+				C2F8C68E1CC1A0B80019E911 /* DatePickerViewController.m in Sources */,
 				C2F8C67E1CC157220019E911 /* PlaceList.m in Sources */,
 				C2F8C6781CC14F0F0019E911 /* RequestHelper.m in Sources */,
 			);

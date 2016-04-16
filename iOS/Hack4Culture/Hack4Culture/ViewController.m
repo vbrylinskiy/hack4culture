@@ -115,6 +115,18 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     }
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"popoverSegue"] || [segue.identifier isEqualToString:@"categoriesSegue"]) {
+        UIViewController *popoverViewController = segue.destinationViewController;
+        popoverViewController.modalPresentationStyle = UIModalPresentationPopover;
+        popoverViewController.popoverPresentationController.delegate = self;
+    }
+}
+
+-(UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
+    return UIModalPresentationNone;
+}
+
 - (void)mapViewTap:(NSNotification*)notif {
     
     CGPoint point = [self.mapView.tapGesture locationInView:self.mapView];
