@@ -13,5 +13,7 @@
 
 - (IBAction)valueChanged:(UISwitch*)sender {
     [RequestHelper updateFilterAtIndex:self.row withValue:[NSNumber numberWithBool:sender.isOn]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CategoriesChanged" object:self];
 }
 @end

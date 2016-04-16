@@ -50,6 +50,8 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     
     self.queue = dispatch_queue_create("com.requests.queue", DISPATCH_QUEUE_SERIAL);
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesDidChange) name:@"CategoriesChanged" object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mapViewTap:) name:MapViewDidTapMap object:self.mapView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mapViewLongTap:) name:MapViewDidLongTapMap object:self.mapView];
     
@@ -128,12 +130,16 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
             }
         }
         if (closeEnough) {
-//            BOOL isEventFiltered = NO;
-//            for (NSString *key in [RequestHelper categorieFilters]) {
-//                if (event.offer.)
-//            }
-            
-            [array addObject:event];
+            // category filtering
+            for (int i=0; i < [[RequestHelper categorieFilters] count]; i++) {
+                if ([[[RequestHelper categorieFilters] objectAtIndex:i] boolValue]) {//if filter active
+                    if ([[event.offer objectForKey:@"type"] objectForKey:@"id"]// if id matches
+                        == [[RequestHelper categories] objectForKey:[[[RequestHelper categories] allKeys] objectAtIndex:i]]) {
+                        [array addObject:event];
+                        break;
+                    }
+                }
+            }
         }
     }
     
@@ -404,4 +410,23 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 
     [self.mapView addAnnotations:self.eventAnnotations];
 }
+
+-(void) categoriesDidChange {
+    
+    [self.mapView removeAnnotations:self.eventAnnotations];
+    [self.eventAnnotations removeAllObjects];
+    
+    NSArray *cleanEvents = [self cleanEvents:self.allEvents];
+    
+    for (Event *event in cleanEvents) {
+        EventAnnotation *ann = [[EventAnnotation alloc] init];
+        ann.event = event;
+        ann.coordinate = CLLocationCoordinate2DMake([event.location[@"lattiude"] floatValue], [event.location[@"longitude"] floatValue]);
+        [self.eventAnnotations addObject:ann];
+    }
+    
+    [self.mapView addAnnotations:self.eventAnnotations];
+}
+
+
 @end
