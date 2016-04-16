@@ -62,7 +62,7 @@ NSString* const MapViewUserInfoMap = @"MapViewUserInfoMap";
     if (numberOfTouches == 1 && tapGesture.state == UIGestureRecognizerStateEnded) {
         id v = [self hitTest:tapPoint withEvent:nil];
         
-        if ([v isKindOfClass:[MKPinAnnotationView class]]) {
+        if ([v isKindOfClass:[MKPinAnnotationView class]] || [v isKindOfClass:[MKAnnotationView class]]) {
             [self selectAnnotation:[v annotation] animated:YES];
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:MapViewDidTapMap object:self userInfo:@{ MapViewUserInfoMap:self }];

@@ -28,6 +28,9 @@
 		EB4453961CC169CC0018DCD9 /* CustomMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453951CC169CC0018DCD9 /* CustomMapView.m */; };
 		EB4453991CC194250018DCD9 /* EventAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453981CC194250018DCD9 /* EventAnnotation.m */; };
 		EB44539C1CC19C960018DCD9 /* EventDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB44539B1CC19C960018DCD9 /* EventDetailsViewController.m */; };
+		EB4453A01CC1C9FB0018DCD9 /* bikes-light.json in Resources */ = {isa = PBXBuildFile; fileRef = EB44539F1CC1C9FB0018DCD9 /* bikes-light.json */; };
+		EB4453A31CC1CA480018DCD9 /* BikesImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = EB4453A21CC1CA480018DCD9 /* BikesImporter.m */; };
+		EB4453A71CC1D0C00018DCD9 /* bike.png in Resources */ = {isa = PBXBuildFile; fileRef = EB4453A61CC1D0C00018DCD9 /* bike.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +74,10 @@
 		EB4453981CC194250018DCD9 /* EventAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAnnotation.m; sourceTree = "<group>"; };
 		EB44539A1CC19C960018DCD9 /* EventDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventDetailsViewController.h; sourceTree = "<group>"; };
 		EB44539B1CC19C960018DCD9 /* EventDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventDetailsViewController.m; sourceTree = "<group>"; };
+		EB44539F1CC1C9FB0018DCD9 /* bikes-light.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "bikes-light.json"; sourceTree = "<group>"; };
+		EB4453A11CC1CA480018DCD9 /* BikesImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BikesImporter.h; sourceTree = "<group>"; };
+		EB4453A21CC1CA480018DCD9 /* BikesImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BikesImporter.m; sourceTree = "<group>"; };
+		EB4453A61CC1D0C00018DCD9 /* bike.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bike.png; sourceTree = "<group>"; };
 		F4EB003E56D92DB90EA6BF60 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -134,6 +141,8 @@
 		EB4453731CC148850018DCD9 /* Hack4Culture */ = {
 			isa = PBXGroup;
 			children = (
+				EB4453A61CC1D0C00018DCD9 /* bike.png */,
+				EB44539F1CC1C9FB0018DCD9 /* bikes-light.json */,
 				C2F8C67F1CC159680019E911 /* Models */,
 				EB4453771CC148850018DCD9 /* AppDelegate.h */,
 				EB4453781CC148850018DCD9 /* AppDelegate.m */,
@@ -161,6 +170,8 @@
 				C2F8C6931CC1B1AA0019E911 /* CategoryCell.m */,
 				EB44539A1CC19C960018DCD9 /* EventDetailsViewController.h */,
 				EB44539B1CC19C960018DCD9 /* EventDetailsViewController.m */,
+				EB4453A11CC1CA480018DCD9 /* BikesImporter.h */,
+				EB4453A21CC1CA480018DCD9 /* BikesImporter.m */,
 			);
 			path = Hack4Culture;
 			sourceTree = "<group>";
@@ -244,8 +255,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB4453841CC148850018DCD9 /* LaunchScreen.storyboard in Resources */,
+				EB4453A71CC1D0C00018DCD9 /* bike.png in Resources */,
 				EB4453811CC148850018DCD9 /* Assets.xcassets in Resources */,
 				EB44537F1CC148850018DCD9 /* Main.storyboard in Resources */,
+				EB4453A01CC1C9FB0018DCD9 /* bikes-light.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +326,7 @@
 				C2F8C6881CC18C780019E911 /* Location.m in Sources */,
 				C2F8C6851CC1767B0019E911 /* Event.m in Sources */,
 				C2F8C67B1CC156F20019E911 /* Place.m in Sources */,
+				EB4453A31CC1CA480018DCD9 /* BikesImporter.m in Sources */,
 				C2F8C6821CC176480019E911 /* EventList.m in Sources */,
 				EB4453761CC148850018DCD9 /* main.m in Sources */,
 				EB4453991CC194250018DCD9 /* EventAnnotation.m in Sources */,

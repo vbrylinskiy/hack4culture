@@ -14,6 +14,7 @@
 #import "Event.h"
 #import "EventDetailsViewController.h"
 #import "RequestHelper.h"
+#import "BikesImporter.h"
 
 typedef NS_ENUM(NSUInteger, ConnectionType) {
     ConnectionTypeDirect,
@@ -25,6 +26,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 @property (nonatomic, weak) IBOutlet CustomMapView *mapView;
 @property (nonatomic, strong) NSMutableArray *annotations;
 @property (nonatomic, strong) NSMutableArray *eventAnnotations;
+@property (nonatomic, strong) NSArray *bikeAnnotations;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *doneButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *clearButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *undoButton;
@@ -59,11 +61,18 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     self.clearButton.enabled = NO;
     self.undoButton.enabled = NO;
     
+    [self importBikes];
+    
     MKMapCamera *camera = [self.mapView.camera copy];
     camera.centerCoordinate = CLLocationCoordinate2DMake(51.109633, 17.032053);
     camera.altitude = 1000.;
     [self.mapView setCamera:camera];
     self.importer = [[EventImporterImpl alloc] init];
+}
+
+- (void)importBikes {
+    self.bikeAnnotations = [BikesImporter importBikes];
+    [self.mapView addAnnotations:self.bikeAnnotations];
 }
 
 - (IBAction)done:(id)sender {
@@ -139,6 +148,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
     self.polyline = nil;
     [self.mapView removeAnnotations:self.mapView.annotations];
     [self.mapView removeOverlays:self.mapView.overlays];
+    [self.mapView addAnnotations:self.bikeAnnotations];
     [self updateBarButtons];
 }
 
@@ -307,26 +317,42 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 }
 
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
-    MKPinAnnotationView *pinView = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"CustomPinAnnotationView"];
-    if (!pinView)
-    {
-        // If an existing pin view was not available, create one.
-        pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"CustomPinAnnotationView"];
-//        pinView.animatesDrop = YES;
-        pinView.canShowCallout = NO;
-//        pinView.image = [UIImage imageNamed:@"pizza_slice_32.png"];
-//        pinView.calloutOffset = CGPointMake(0, 32);
+    if ([annotation isKindOfClass:[Bike class]]) {
+        MKAnnotationView *pinView = nil;
+        static NSString *defaultPinID = @"com.pin";
+        pinView = (MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
+        if ( pinView == nil )
+        pinView = [[MKAnnotationView alloc]
+                   initWithAnnotation:annotation reuseIdentifier:defaultPinID];
+        
+        //pinView.pinColor = MKPinAnnotationColorGreen;
+        pinView.canShowCallout = YES;
+        //pinView.animatesDrop = YES;
+        pinView.image = [UIImage imageNamed:@"bike.png"];
+        
+        return pinView;
     } else {
-        pinView.annotation = annotation;
+        MKPinAnnotationView *pinView = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"CustomPinAnnotationView"];
+        if (!pinView)
+        {
+            // If an existing pin view was not available, create one.
+            pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"CustomPinAnnotationView"];
+            //        pinView.animatesDrop = YES;
+            pinView.canShowCallout = NO;
+            //        pinView.image = [UIImage imageNamed:@"pizza_slice_32.png"];
+            //        pinView.calloutOffset = CGPointMake(0, 32);
+        } else {
+            pinView.annotation = annotation;
+        }
+        
+        if ([annotation isKindOfClass:[EventAnnotation class]]) {
+            pinView.pinTintColor = [UIColor colorWithRed:70./255 green:171./255 blue:183./255 alpha:1.];
+        } else {
+            pinView.pinTintColor = [UIColor orangeColor];
+        }
+        
+        return pinView;
     }
-    
-    if ([annotation isKindOfClass:[EventAnnotation class]]) {
-        pinView.pinTintColor = [UIColor colorWithRed:70./255 green:171./255 blue:183./255 alpha:1.];
-    } else {
-        pinView.pinTintColor = [UIColor orangeColor];
-    }
-    
-    return pinView;
 }
 
 
@@ -334,7 +360,7 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
 {
     MKPolylineRenderer* lineView = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
     lineView.strokeColor = [UIColor orangeColor];
-    lineView.lineWidth = 7;
+    lineView.lineWidth = 3;
     return lineView;
 }
 
