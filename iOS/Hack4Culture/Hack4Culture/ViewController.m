@@ -418,13 +418,13 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
         popoverController.presentingController = self;
         [popoverController presentPopoverPresentationControllerWithSourceView:self.mapView sourceRect:view.frame];
     } else if ([view.annotation isKindOfClass:[GroupedEventAnnotation class]]) {
-        EventListViewController *popoverController = [self.storyboard instantiateViewControllerWithIdentifier:@"EventListViewController"];
+        UINavigationController *popoverController = [self.storyboard instantiateViewControllerWithIdentifier:@"EventListViewController"];
         popoverController.preferredContentSize = CGSizeMake(300.0, 500.0);
-        popoverController.delegate = self;
+        [(EventListViewController *)popoverController.topViewController setDelegate:self];
         popoverController.modalPresentationStyle = UIModalPresentationPopover;
-        popoverController.events = [(GroupedEventAnnotation *)view.annotation events];
-        popoverController.presentingController = self;
-        [popoverController presentPopoverPresentationControllerWithSourceView:self.mapView sourceRect:view.frame];
+        [(EventListViewController *)popoverController.topViewController setEvents:[(GroupedEventAnnotation *)view.annotation events]];
+        [(EventListViewController *)popoverController.topViewController setPresentingController:self];
+        [(EventListViewController *)popoverController.topViewController presentPopoverPresentationControllerWithSourceView:self.mapView sourceRect:view.frame];
     }
 }
 
@@ -503,7 +503,6 @@ typedef NS_ENUM(NSUInteger, ConnectionType) {
             if ([alreadyInGroup containsObject:ann2]) {
                 continue;
             } else {
-                NSLog(@"%f %f \n %f %f", [ann coordinate].latitude, [ann coordinate].longitude, [ann2 coordinate].latitude, [ann2 coordinate].longitude);
                 if (CLCOORDINATES_EQUAL2([ann coordinate], [ann2 coordinate])) {
                     [group addObject:ann2];
                     [alreadyInGroup addObject:ann2];

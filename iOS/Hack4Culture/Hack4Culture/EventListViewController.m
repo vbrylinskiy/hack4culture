@@ -7,6 +7,7 @@
 //
 
 #import "EventListViewController.h"
+#import "EventDetailsViewController.h"
 
 @implementation EventListViewController
 
@@ -14,6 +15,7 @@
     [super viewDidLoad];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -28,19 +30,29 @@
     return cell;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    EventDetailsViewController *popoverController = [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailsViewController"];
+//    popoverController.preferredContentSize = CGSizeMake(300.0, 500.0);
+//    popoverController.delegate = self;
+//    popoverController.modalPresentationStyle = UIModalPresentationPopover;
+    popoverController.event = self.events[indexPath.row];
+//    popoverController.presentingController = self;
+    [self.navigationController pushViewController:popoverController animated:YES];
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 80.;
 }
 
 - (void)presentPopoverPresentationControllerWithSourceView:(UIView *)sourceView sourceRect:(CGRect)sourceRect {
     
-    UIPopoverPresentationController *popoverController = self.popoverPresentationController;
+    UIPopoverPresentationController *popoverController = self.navigationController.popoverPresentationController;
     popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
     popoverController.sourceView = sourceView;
     popoverController.sourceRect = sourceRect;
     popoverController.delegate = self;
     
-    [self.presentingController presentViewController:self animated:YES completion:nil];
+    [self.presentingController presentViewController:self.navigationController animated:YES completion:nil];
     
 }
 

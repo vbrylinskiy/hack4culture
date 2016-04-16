@@ -293,7 +293,7 @@
         <!--Event List View Controller-->
         <scene sceneID="IUs-Dc-6Ua">
             <objects>
-                <tableViewController storyboardIdentifier="EventListViewController" id="ogn-NS-5yA" customClass="EventListViewController" sceneMemberID="viewController">
+                <tableViewController id="ogn-NS-5yA" customClass="EventListViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="wbD-UG-iIf">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -303,12 +303,13 @@
                             <outlet property="delegate" destination="ogn-NS-5yA" id="mzF-U6-sgd"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" id="YlL-Zn-ZcY"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W6m-wB-6Sf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1164" y="1344"/>
+            <point key="canvasLocation" x="1976" y="1344"/>
         </scene>
-        <!--Root View Controller-->
+        <!--Event Details View Controller-->
         <scene sceneID="Jox-Ic-W65">
             <objects>
                 <tableViewController storyboardIdentifier="EventDetailsViewController" id="Az8-0E-Sfk" customClass="EventDetailsViewController" sceneMemberID="viewController">
@@ -569,6 +570,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eMN-ET-Pnv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="985" y="345"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="mlh-wd-bGZ">
+            <objects>
+                <navigationController storyboardIdentifier="EventListViewController" automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="foG-bC-Sga" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="KQD-ch-eHB">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="ogn-NS-5yA" kind="relationship" relationship="rootViewController" id="NmQ-es-cu8"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Pcs-ft-1kn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1164" y="1344"/>
         </scene>
     </scenes>
 </document>
